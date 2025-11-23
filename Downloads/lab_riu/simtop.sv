@@ -5,6 +5,9 @@ module simtop;
     logic [3:0] KEY;
     logic [17:0] SW;
 
+    // internal signals used by the FSM
+    logic reset;                // fsm is active-low
+    logic [31:0] gpio_out;      // copy of CPU's GPIO output register
 
     top dut
     (
@@ -35,11 +38,12 @@ module simtop;
     // ---------------- Clock generator ---------------------------
     initial clk = 0;
     always #5 clk = ~clk; // 10 time units per full period
+    // ------------------------------------------------------------
 
-    // connect reset and gpio_out (outputs) to fsm
+    // -------- connect reset and gpio_out (outputs) to fsm -------
     assign reset   = KEY[0];                // FSM uses active-low reset
     assign gpio_out = dut.my_cpu.gpio_out_reg;  // tap the CPU's GPIO output register
-    // -------------------------------------------------------------------
+    // ------------------------------------------------------------
 
     // -------------- B / J / Etc Checker -----------------
     // The expected GPIO sequence is:
@@ -58,6 +62,12 @@ module simtop;
         // 011 = final marker (15) after taking the branch/jump
     logic [2:0] state; 
 
+    // ============================== FINITE STATE MACHINE FOR SELF CHECKING TESTBENCH ==============================
+    //  BELOW is the fsm logic that verifies branch (b) and jump (j) instructions for lab 4.
+    //  It will notify if an unexpected thing happens, giving us an error message and stops simluation.
+    //  it runs every clock cycles and vlalidates the cpu is handling jumps and branches correctly. 
+    // ==============================================================================================================
+    
     always_ff @(posedge clk, negedge reset) 
     begin
         if (!reset) begin
@@ -104,9 +114,14 @@ module simtop;
         end
     end
 
-
+    // ========================================= DRIVING THE SIMULATION ============================================
+    //  from lab 3 where we implemented r, i, and u, and self-checkign testbench
+    //  initializes switch and keys
+    //  prints summary of executions at end
+    //  summary: tests, drives reset, prints debug info, and manages overall simulation timeline
+    // ==============================================================================================================
+    
     initial begin
-        
         // Start conditions
         SW = 18'b0;
         // KEY: default not-pressed = 1 (DE2 buttons are active-low typically)
