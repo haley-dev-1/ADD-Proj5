@@ -2,7 +2,7 @@
 // needs to be named the same as the file 
 module cpu(
     input logic clk, 
-    input logic res, // named res, needs to match below 
+    input logic res, // reset
     input logic [17:0] gpio_in,
     output logic [31:0] gpio_out
 );
@@ -76,7 +76,7 @@ module cpu(
     // );
 
     // "initializing instruction memory" from slides
-    logic [31:0] instruction_mem [4095:0];
+    logic [31:0] instruction_mem [4095:0]; // 4k-word (32 bits) instruction memory array
     logic [31:0] instruction_EX;
 
     //needs to follow naming of compiled rars program 
@@ -87,12 +87,18 @@ module cpu(
         if (res) begin
             instruction_EX <= 32'b0;
             pc_F <= 32'b0;
-        end else 
-        begin
+        end else begin
             instruction_EX <= instruction_mem[pc_F[11:2]];
-            pc_F <= pc_F + 32'd4; // extend to be conditional, sequential or not
+            pc_F <= pc_F + 32'd4;
         end
     end
+
+    // TODO: pc_next_F and PC mux controlled by ''_EX and ''_ctrl_EX
+    // pc_next_F = pc+F + $ for standard (good case) case
+    // pc_next_F = branch_target_EX
+    // pc_next_F = jal_target+EX, jalr_target_Ex when J/JALR
+
+    logic [31:0] imm_I, imm_B, imm_U, imm_J; // or [31:0] after sign-ext in decoder
 
 	riscv_32_instr_decoder decode (
 
@@ -159,19 +165,20 @@ module cpu(
     
     assign alu_A = readdata1;
     always_comb begin
-    	case(alusrc_EX)
-    		2'b00: alu_B = readdata2; // R type use rs2
-    		2'b01: alu_B = {{20{imm12[11]}}, imm12}; // I type 
-    		2'b10: alu_B = {imm20, 12'b0};
-    	default: alu_B = 32'b0;
-    	endcase
-    end 
+        case (alusrc_EX)
+            2'b00: alu_B = readdata2;  // R TYPE rs2
+            2'b01: alu_B = imm_I;      // I tYPE / already sign-extended
+            2'b10: alu_B = imm_U;      // U-type: already shifted
+            default: alu_B = 32'b0;
+        endcase
+    end
+ 
     
     //Select what data to write back to register file 
     always_comb begin 
     	case(regsel_EX)
     		2'b00: writedata = 32'b0; // Default 
-    		2'b01: writedata = {imm20, 12'b0}; // write immediate 
+    		2'b01: writedata =  imm_U; //write immediate 
     		2'b10: writedata = alu_result;  // Normal: write ALU result 
     		2'b11: writedata = {14'b0,gpio_in}; // CSRRW read: write GPIO input 
     		default: writedata = 32'b0;
