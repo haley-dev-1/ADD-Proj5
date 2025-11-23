@@ -5,6 +5,7 @@ module simtop;
     logic [3:0] KEY;
     logic [17:0] SW;
 
+
     top dut
     (
         // CLOCK
@@ -31,11 +32,81 @@ module simtop;
         .HEX7(HEX7)
     );
 
-    // ---------------- Clock generator ----------------
+    // ---------------- Clock generator ---------------------------
     initial clk = 0;
     always #5 clk = ~clk; // 10 time units per full period
 
+    // connect reset and gpio_out (outputs) to fsm
+    assign reset   = KEY[0];                // FSM uses active-low reset
+    assign gpio_out = dut.my_cpu.gpio_out_reg;  // tap the CPU's GPIO output register
+    // -------------------------------------------------------------------
+
+    // -------------- B / J / Etc Checker -----------------
+    // The expected GPIO sequence is:
+    //  outputs[0] = 5
+    //  outputs[1] = 10 (instruction after branch, if NOT taken)
+    //  outputs[2] = 15 (final "done", if branch IS taken)
+    // -------------------------------------------------------------
+    
+    // -------------------------- B /J / Branch ---------------------
+    int outputs [3] = '{5,10,15};
+
+    // the current state (for FSM tb.)
+        // 000 = waiting for pre-branch marker (5)
+        // 001 = cycle of the branch/jump instruction
+        // 010 = stall/flush cycle (should NOT see wrong-path output)
+        // 011 = final marker (15) after taking the branch/jump
+    logic [2:0] state; 
+
+    always_ff @(posedge clk, negedge reset) 
+    begin
+        if (!reset) begin
+            state <= 3'b000; // reset system on reset, otherwise continue to else!
+        end 
+        else begin
+            case (state)                    // Check what state we're in
+                3'b000: begin               // Loop in the initial state until we sync with the pre-branch output of 5
+                    if (gpio_out == outputs[0]) begin
+                        $display("Synced with pre-branch output: %0d", gpio_out);
+                        state <= 3'b001; // Once we see it, move to the next state
+                    end
+                end
+            
+                3'b001: begin               // Next up we have the branch instruction itself, so just wait a cycle here for it to finish
+                    state <= 3'b010;
+                end
+            
+                3'b010: begin               // Now we should be in the stall cycle right after the branch instruction
+                    if (gpio_out == outputs[1]) begin   // If we see the post-branch output, then either we didn't stall or we didn't take the branch
+                        $display("Oh no, we executed the instruction after the branch and got the output: %0d", gpio_out);
+                        $finish;
+
+                    end else if (gpio_out == outputs[0]) begin  // If the output is unchanged, then we successfully stalled
+                        $display("Output didn't change during stall, good: %0d", gpio_out);
+                        state <= 3'b011;    // Only go to the final state if things look good
+
+                    end else begin          // If we see anything else, that's super weird
+                        $display("Unexpected output during stall: %0d", gpio_out);
+                        $finish;
+                    end
+                end
+            
+                3'b011: begin               // The final state: we're done stalling and expect to be at the "done:" label
+                    if (gpio_out == outputs[2]) begin // Check for the final output from the "done:" csrrw
+                        $display("Branch taken successfully, final output: %0d", gpio_out); // Yay, it's good
+                        $finish;
+                    end else begin // Oh no, it's bad
+                        $display("Unexpected final output: %0d", gpio_out);
+                        $finish;
+                    end
+                end
+            endcase
+        end
+    end
+
+
     initial begin
+        
         // Start conditions
         SW = 18'b0;
         // KEY: default not-pressed = 1 (DE2 buttons are active-low typically)
@@ -57,6 +128,7 @@ module simtop;
         $display("PC= %h", dut.my_cpu.pc_F);
         $display("Instruction_EX = %h", dut.my_cpu.instruction_EX);
 
+        // 
         repeat (60) begin
             #10; // wait one clock period (since clk toggles every 5)
             $display("%0t\tPC=%h\tINSTR=0x%08h\tRF[5]=0x%08h GPIO_in=0x%08h GPIO_out=0x%08h GPIO_we=%b",
@@ -78,50 +150,3 @@ module simtop;
     end
 
 endmodule
-
-// --------------------- The below is from help from TA... lab 6 single branch instruction ------------------------------------------------------
-/*
-corresponding testbench state machine (assuming you've called your GPIO output register gpio_out) would be:
-
-integer outputs [] = {5, 10, 15}; // An array of the expected outputs in order
-logic [2:0] state; // Current state
-always_ff @(posedge clk, negedge reset) begin
-    if (!reset) begin
-        state <= 3'b000; // Reset the state on system reset
-    end else begin
-        case (state) // Check what state we're in
-            3'b000: begin // Loop in the initial state until we sync with the pre-branch output of 5
-                if (gpio_out == outputs[0]) begin
-                    $display("Synced with pre-branch output: %0d", gpio_out);
-                    state <= 3'b001; // Once we see it, move to the next state
-                end
-            end
-            3'b001: begin // Next up we have the branch instruction itself, so just wait a cycle here for it to finish
-                state <= 3'b010;
-            end
-            3'b010: begin // Now we should be in the stall cycle right after the branch instruction
-                if (gpio_out == outputs[1]) begin // If we see the post-branch output, then either we didn't stall or we didn't take the branch
-                    $display("Oh no, we executed the instruction after the branch and got the output: %0d", gpio_out);
-                    $finish;
-                end else if (gpio_out == outputs[0]) begin // If the output is unchanged, then we successfully stalled
-                    $display("Output didn't change during stall, good: %0d", gpio_out);
-                    state <= 3'b011; // Only go to the final state if things look good
-                end else begin // If we see anything else, that's super weird
-                    $display("Unexpected output during stall: %0d", gpio_out);
-                    $finish;
-                end
-            end
-            3'b011: begin // The final state: we're done stalling and expect to be at the "done:" label
-                if (gpio_out == outputs[2]) begin // Check for the final output from the "done:" csrrw
-                    $display("Branch taken successfully, final output: %0d", gpio_out); // Yay, it's good
-                    $finish;
-                end else begin // Oh no, it's bad
-                    $display("Unexpected final output: %0d", gpio_out);
-                    $finish;
-                end
-            end
-        endcase
-    end
-end
-*/
-// --------------------- The above is from help from TA... lab 6 single branch instruction ------------------------------------------------------
