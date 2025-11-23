@@ -79,6 +79,7 @@ module simtop;
 
 endmodule
 
+// --------------------- The below is from help from TA... lab 6 single branch instruction ------------------------------------------------------
 /*
 corresponding testbench state machine (assuming you've called your GPIO output register gpio_out) would be:
 
@@ -123,3 +124,4 @@ always_ff @(posedge clk, negedge reset) begin
     end
 end
 */
+// --------------------- The above is from help from TA... lab 6 single branch instruction ------------------------------------------------------
