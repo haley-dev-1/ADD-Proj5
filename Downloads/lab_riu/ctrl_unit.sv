@@ -95,7 +95,7 @@ module ctrl_unit(
                 if      (funct3 == 3'b000) aluop = 4'b????; // JALR
             end
 
-            // TODO: J Type
+            // TODO: Jal Type
 
             // ---------------------- B ----------------------
             // B Type Instructions - "tHESE PREVENT THE cpu FROM EXECUTING THE NEXT INSTRUCTION IN THE PROGRAM, AND INSTEAD BEGIN A SEQ. OF INSTRUCTIONS IN ANOTHER MEMORY LOCAITON
