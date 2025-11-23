@@ -75,6 +75,22 @@ module cpu(
     //     .data(instruction_F)        // valid next cycle
     // );
 
+    // ============= lab 4, so we can implement R and J instructions .... new logic required ============
+    logic [31:0] pc_EX;         // PC of instruction in EX stage
+    logic [31:0] branch_target_EX;
+    logic [31:0] jal_target_EX;
+    logic [31:0] jalr_target_EX;
+    logic [1:0]  pcsrc_ctrl_EX; // from control unit (00=pc+4, 01=branch, 10=jal, 11=jalr)
+    logic [31:0] pc_next_F;
+
+    // PC targets for control flow, computed in EX stage
+    assign branch_target_EX = pc_EX + imm_B;  // B-type
+    assign jal_target_EX    = pc_EX + imm_J;  // JAL
+    assign jalr_target_EX   = (readdata1 + imm_I) & 32'hFFFF_FFFE; // JALR: (rs1 + imm_I) & ~1
+
+    // =============================================================================
+
+
     // "initializing instruction memory" from slides
     logic [31:0] instruction_mem [4095:0]; // 4k-word (32 bits) instruction memory array
     logic [31:0] instruction_EX;
@@ -82,21 +98,40 @@ module cpu(
     //needs to follow naming of compiled rars program 
     initial $readmemh("instmem.dat", instruction_mem);
 
-    // PC / instruction fetch
+    // ===================== PC / instruction fetch ==========================
+    // beforehand, our cpu only did sequential next instructions ... no jump/branch ...
     always_ff @(posedge clk)
         if (res) begin
-            instruction_EX <= 32'b0;
-            pc_F <= 32'b0;
+            pc_F          <= 32'b0;
+            pc_EX         <= 32'b0;
+            instruction_EX <= 32'b0; // execute 
         end else begin
+            // fetch
             instruction_EX <= instruction_mem[pc_F[11:2]];
+            
+            // pipeline pc into ex stage, so it still knows the pc
             pc_F <= pc_F + 32'd4;
+            
+            // update fetch pc for next cycle according to branch/jump
+            pc_F <= pc_next_F;
         end
     end
+    // ========================================================================
 
     // TODO: pc_next_F and PC mux controlled by ''_EX and ''_ctrl_EX
     // pc_next_F = pc+F + $ for standard (good case) case
     // pc_next_F = branch_target_EX
     // pc_next_F = jal_target+EX, jalr_target_Ex when J/JALR
+    // select next pc based on contrl from ctrl unit
+    always_comb begin
+        case (pcsrc_ctrl_EX)
+            2'b00: pc_next_F = pc_F + 32'd4;       // normal
+            2'b01: pc_next_F = branch_target_EX;    // B-type
+            2'b10: pc_next_F = jal_target_EX;       // JAL
+            2'b11: pc_next_F = jalr_target_EX;      // JALR
+        endcase
+    end
+
 
     logic [31:0] imm_I, imm_B, imm_U, imm_J; // or [31:0] after sign-ext in decoder
 
