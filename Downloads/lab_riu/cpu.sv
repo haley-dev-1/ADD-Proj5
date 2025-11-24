@@ -32,8 +32,6 @@ module cpu(
     logic [2:0] funct3;
     logic [6:0] funct7;
     logic [4:0] rs1, rs2, rd;
-    logic [11:0] imm12;
-    logic [19:0] imm20;
     
     //control signals
     logic [1:0] alusrc_EX;
@@ -57,6 +55,10 @@ module cpu(
     logic [31:0] instruction_F;
     logic [31:0] instruction_EX;
 
+    logic [1:0] pcsrc_ctrl_EX; // <== used in ctlr unit (00=pc+4, 01=branch, 10=jal, 11=jalr)
+
+    // immmediates from decoder (sign-extended)
+    logic [31:0] imm_I, imm_B, imm_U, imm_J;
 
     // instruction memory
         // instr_mem imem (
@@ -65,17 +67,13 @@ module cpu(
     //     .data(instruction_F)        // valid next cycle
     // );
 
-    logic [1:0] pcsrc_ctrl_EX; // <== used in ctlr unit 
-
-    // immmediates from decoder (sign-extended)
-    logic [31:0] imm_I, imm_B, imm_U, imm_J;
+   
 
     // ============= lab 4, so we can implement R and J instructions .... new logic required ============
     logic [31:0] pc_EX;         // PC of instruction in EX stage
     logic [31:0] branch_target_EX;
     logic [31:0] jal_target_EX;
     logic [31:0] jalr_target_EX;
-    logic [1:0]  pcsrc_ctrl_EX; // from control unit (00=pc+4, 01=branch, 10=jal, 11=jalr)
     logic [31:0] pc_next_F;
 
     // PC targets for control flow, computed in EX stage
@@ -126,9 +124,6 @@ module cpu(
             default: pc_next_F = pc_F + 32'd4;
         endcase
     end
-
-
-    logic [31:0] imm_I, imm_B, imm_U, imm_J; // or [31:0] after sign-ext in decoder
 
 	riscv_32_instr_decoder decode (
 
