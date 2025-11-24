@@ -20,7 +20,7 @@ module ctrl_unit(
     output logic        regwrite_EX,
     output logic [1:0] regsel_EX,
     output logic [3:0] aluop_EX,
-    output logic [1:0] pcsrc_ctrl_EX, // 2 bits!  seq (00), jal, jalr, or 01 for branch
+    output logic [1:0] pcsrc_ctrl_EX, // 2 bits!  seq (00), 01 for branch, jal (10), jalr (11) 
 
 );
 
@@ -83,23 +83,67 @@ module ctrl_unit(
                 else if (funct3 == 3'b111) aluop_EX = 4'b0000; // ANDI
             end
 
-            // ---------------------- J ----------------------
-            // why does it say do I type if the opcode is different lmao
-            // --------------------- JALR ----------------------- // 
+            // --------------------- JALR (I type) ----------------------- // 
+            
             7'b1100111: begin
                 // make sure these are correct
                 regwrite_EX = 1'b1;
                 alusrc_EX   = 2'b10;
                 regsel_EX   = 2'b10;
                 
-                if      (funct3 == 3'b000) aluop = 4'b????; // JALR
+                if  (funct3 == 3'b000) 
+                    aluop = 4'b????; // JALR
             end
 
-            // TODO: Jal Type
+
+
+            // ============================================== J ================================================ // 
+            
+            // -------------------- JAL (J TYPE) ------------------------------------------------------------------ //
+            7'b1101111: begin           // jal rd, offset: R[rd] = PC+4; PC <- PC + sext(offset) 
+                
+                regwrite_EX = 1'b1;     // We are indeed writing. address goes into rd.
+
+                GPIO_we = 1'b0;
+                regsel_EX = 2'b11;      // pertains to pc_4 for jal/jalr
+
+                // ---- KEY IDEA: WE DON'T USE THE ALU FOR JUMP INSTRUCTIONS... THEY DON'T OPERATE ON NOTHIN'! ---- //
+                alusrc_EX = 2'b00; //   // leave at 0 cuz we don't use the alu operand for jal instruction 
+                aluop_EX = 4'b0011;           // we don't use this for jal; we set to ADD.  
+                // ------------------------------------------------------------------------------------------------ //
+
+                pcsrc_ctrl_EX = 2'b10;  // decoding is somewhere above. it tells us pcsrc_ctrl_EX settings are set  to 10 for JAL (J) type logic. 
+
+
+                // ---------- PC INSTRUCTION IN EX + SIGN EXTENDED JUMP OFFSET FROM DECODER ----------------------- //
+                // jal_target_EX = pc_EX + imm_J;
+                // ------------------------------------------------------------------------------------------------ //
+                
+                // -------------------- JAL also (second main use) writes PC+4 to rd ------------------------------ //
+                // R[rd] = PC + 4
+                // ------------------------------------------------------------------------------------------------ //
+
+            end
+
+            // ********* TODO: CROSS CHECK WITH CPU.SV BECAUSE THIS IS WHAT IS EXPECTED. ********** //
+            // decoder
+                // always_comb begin
+                //  case (pcsrc_ctrl_EX)
+                //      2'b00: pc_next_F = pc_F + 32'd4;      // normal
+                //      2'b01: pc_next_F = branch_target_EX;  // b
+                //      2'b10: pc_next_F = jal_target_EX;     // JAL
+                //      2'b11: pc_next_F = jalr_target_EX;    // JALR
+                //  endcase
+                // end
+            // ***************************************************************************************
+
+            // ================================================================================================= // 
+
+
 
             // ---------------------- B ----------------------
             // B Type Instructions - "tHESE PREVENT THE cpu FROM EXECUTING THE NEXT INSTRUCTION IN THE PROGRAM, AND INSTEAD BEGIN A SEQ. OF INSTRUCTIONS IN ANOTHER MEMORY LOCAITON
-            7'1100011: begin
+            7'b1100011: begin
 
                 // defaults
                 // ...
