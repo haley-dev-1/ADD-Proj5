@@ -200,20 +200,16 @@ module cpu(
         endcase
     end
  
-    
-    // TODO!!!!!!!!!!!!!! Override with PC+$ controlled by contorl unit ... 
-    // TODO
-    // TODO
-    // Select what data to write back to register file 
+    // implements the regsel_EX = 2'b11 as PC+4 for the j type in CPU
     always_comb begin 
-    	case(regsel_EX)
-    		2'b00: writedata = 32'b0; // Default 
-    		2'b01: writedata =  imm_U; //write immediate 
-    		2'b10: writedata = alu_result;  // Normal: write ALU result 
-    		2'b11: writedata = {14'b0,gpio_in}; // CSRRW read: write GPIO input 
-    		default: writedata = 32'b0;
-    	endcase
+        case (regsel_EX)
+            2'b00: writedata = 32'b0;         // default
+            2'b01: writedata = imm_U;        // lui/aiupc
+            2'b10: writedata = alu_result;    // ALU result
+            2'b11: writedata = pc_EX + 32'd4;   // JAL/JALR return address <--- for jumps!
+        endcase
     end
+
     // TODO!!!!!!!!!!!!!! Override with PC+$ controlled by contorl unit ... 
     // TODO
     // TODO
