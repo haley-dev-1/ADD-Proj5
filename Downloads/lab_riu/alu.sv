@@ -3,7 +3,6 @@
 * Copyright 2020 Jason Bakos, Philip Conrad, Charles Daniels
 */
 
-
 module alu(
         input logic  [31:0] A,
         input logic  [31:0] B,
@@ -22,8 +21,6 @@ assign {mulhu, mullu}  = A*B;
 assign {mulhs, mulls}  = $signed(A)*$signed(B);
 assign shamt = B[4:0];
 
-// Arithmetic right shift does not work under ModelSim, so we we work
-// around this by implementing our own shift. Notice the blocking assignments.
 always_comb begin
         shifted = A;
         if (shamt[0]) shifted = {{1{A[31]}},shifted[31:1]};
@@ -32,7 +29,6 @@ always_comb begin
         if (shamt[3]) shifted = {{8{A[31]}},shifted[31:8]};
         if (shamt[4]) shifted = {{16{A[31]}},shifted[31:16]};
 end
-
 
 assign R =
         (op == 4'b0000) ? A & B :
@@ -49,6 +45,7 @@ assign R =
         (op == 4'b1011) ? shifted :
         (op == 4'b1100) ? ($signed(A) < $signed(B)) :
         (op == 4'b1101) ? (A < B) :
-        (op == 4'b1110) ? (A < B) : (A < B);
+        (op == 4'b1110) ? (A / B) :        // FIXED: Division
+        (op == 4'b1111) ? (A % B) : 32'b0; // FIXED: Modulo
 
 endmodule

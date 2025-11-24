@@ -19,22 +19,39 @@ module regfile (
 
 logic [31:0] mem[31:0];
 
+// Write on clock edge
 always_ff @(posedge clk) begin
         if (we) mem[writeaddr] <= writedata;
 end
 
+// Read with bypassing - but use PREVIOUS cycle's we
+// This breaks the combinational loop
+logic we_prev;
+logic [4:0] writeaddr_prev;
+logic [31:0] writedata_prev;
+
+always_ff @(posedge clk) begin
+    we_prev <= we;
+    writeaddr_prev <= writeaddr;
+    writedata_prev <= writedata;
+end
+
 always_comb begin
-         $monitor("reg 6: %8h", mem[6]);
-         $monitor("reg 5: %8h", mem[5]);
-         $monitor("writeaddr: %8h, we: %1h", writeaddr, we);
+        // Read port 1 with bypassing
+        if (readaddr1 == 5'd0) 
+            readdata1 = 32'd0;
+        else if (we_prev && readaddr1 == writeaddr_prev) 
+            readdata1 = writedata_prev;  // Bypass from previous write
+        else 
+            readdata1 = mem[readaddr1];
 
-        if (readaddr1 == 5'd0) readdata1 = 32'd0;
-        else if (we && readaddr1 == writeaddr) readdata1 = writedata;
-        else readdata1 = mem[readaddr1];
-
-        if (readaddr2 == 5'd0) readdata2 = 32'd0;
-        else if (we && readaddr2 == writeaddr) readdata2 = writedata;
-        else readdata2 = mem[readaddr2];
+        // Read port 2 with bypassing
+        if (readaddr2 == 5'd0) 
+            readdata2 = 32'd0;
+        else if (we_prev && readaddr2 == writeaddr_prev) 
+            readdata2 = writedata_prev;  // Bypass from previous write
+        else 
+            readdata2 = mem[readaddr2];
 end
 
 endmodule

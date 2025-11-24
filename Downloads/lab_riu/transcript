@@ -1,0 +1,104 @@
+# vsim -pedanticerrors -hazards -c -sva -immedassert work.simtop -do "/dev/stdin" 
+# Start time: 01:28:30 on Oct 20,2025
+# ** Note: (vsim-8009) Loading existing optimized design _opt
+# //  Questa Sim-64
+# //  Version 2020.1 linux_x86_64 Jan 28 2020
+# //
+# //  Copyright 1991-2020 Mentor Graphics Corporation
+# //  All Rights Reserved.
+# //
+# //  QuestaSim and its associated documentation contain trade
+# //  secrets and commercial or financial information that are the property of
+# //  Mentor Graphics Corporation and are privileged, confidential,
+# //  and exempt from disclosure under the Freedom of Information Act,
+# //  5 U.S.C. Section 552. Furthermore, this information
+# //  is prohibited from disclosure under the Trade Secrets Act,
+# //  18 U.S.C. Section 1905.
+# //
+# Loading sv_std.std
+# Loading work.simtop(fast)
+# Loading work.cpu(fast)
+# do /dev/stdin
+# ======================================
+# Starting CPU test - Applying Reset
+# ======================================
+# Reset released, CPU running...
+# CSR INSTR: PC=00000004 imm12=0xf00 regwrite=1 GPIO_we=0 regsel=11 rs1= 0 rd= 5 readdata1=0x00000000 writedata=0x00000000 GPIO_in=0x0000000f GPIO_out=0x00000000
+# *** SWITCH READ: PC=00000004  SW read into reg= 5, value=0x0000000f
+# CSR INSTR: PC=00000008 imm12=0xf02 regwrite=0 GPIO_we=1 regsel=00 rs1= 5 rd= 0 readdata1=0xxxxxxxxx writedata=0x0000000f GPIO_in=0x0000000f GPIO_out=0x00000000
+# *** HEX WRITE: PC=00000008  HEX value=0xxxxxxxxx  (readdata1)
+# 
+# === After 100ns ===
+# PC= 00000028
+# Instruction_EX = xxxxxxxx
+# 130	PC=0000002c	INSTR=0xxxxxxxxx	RF[5]=0xxxxxxxxx RF[30]=0xxxxxxxxx GPIO_in=0x0000000f GPIO_out=0xxxxxxxxx GPIO_we=0
+# 140	PC=00000030	INSTR=0xxxxxxxxx	RF[5]=0xxxxxxxxx RF[30]=0xxxxxxxxx GPIO_in=0x0000000f GPIO_out=0xxxxxxxxx GPIO_we=0
+# 150	PC=00000034	INSTR=0xxxxxxxxx	RF[5]=0xxxxxxxxx RF[30]=0xxxxxxxxx GPIO_in=0x0000000f GPIO_out=0xxxxxxxxx GPIO_we=0
+# 160	PC=00000038	INSTR=0xxxxxxxxx	RF[5]=0xxxxxxxxx RF[30]=0xxxxxxxxx GPIO_in=0x0000000f GPIO_out=0xxxxxxxxx GPIO_we=0
+# 170	PC=0000003c	INSTR=0xxxxxxxxx	RF[5]=0xxxxxxxxx RF[30]=0xxxxxxxxx GPIO_in=0x0000000f GPIO_out=0xxxxxxxxx GPIO_we=0
+# 180	PC=00000040	INSTR=0xxxxxxxxx	RF[5]=0xxxxxxxxx RF[30]=0xxxxxxxxx GPIO_in=0x0000000f GPIO_out=0xxxxxxxxx GPIO_we=0
+# 190	PC=00000044	INSTR=0xxxxxxxxx	RF[5]=0xxxxxxxxx RF[30]=0xxxxxxxxx GPIO_in=0x0000000f GPIO_out=0xxxxxxxxx GPIO_we=0
+# 200	PC=00000048	INSTR=0xxxxxxxxx	RF[5]=0xxxxxxxxx RF[30]=0xxxxxxxxx GPIO_in=0x0000000f GPIO_out=0xxxxxxxxx GPIO_we=0
+# 210	PC=0000004c	INSTR=0xxxxxxxxx	RF[5]=0xxxxxxxxx RF[30]=0xxxxxxxxx GPIO_in=0x0000000f GPIO_out=0xxxxxxxxx GPIO_we=0
+# 220	PC=00000050	INSTR=0xxxxxxxxx	RF[5]=0xxxxxxxxx RF[30]=0xxxxxxxxx GPIO_in=0x0000000f GPIO_out=0xxxxxxxxx GPIO_we=0
+# 230	PC=00000054	INSTR=0xxxxxxxxx	RF[5]=0xxxxxxxxx RF[30]=0xxxxxxxxx GPIO_in=0x0000000f GPIO_out=0xxxxxxxxx GPIO_we=0
+# 240	PC=00000058	INSTR=0xxxxxxxxx	RF[5]=0xxxxxxxxx RF[30]=0xxxxxxxxx GPIO_in=0x0000000f GPIO_out=0xxxxxxxxx GPIO_we=0
+# 250	PC=0000005c	INSTR=0xxxxxxxxx	RF[5]=0xxxxxxxxx RF[30]=0xxxxxxxxx GPIO_in=0x0000000f GPIO_out=0xxxxxxxxx GPIO_we=0
+# 260	PC=00000060	INSTR=0xxxxxxxxx	RF[5]=0xxxxxxxxx RF[30]=0xxxxxxxxx GPIO_in=0x0000000f GPIO_out=0xxxxxxxxx GPIO_we=0
+# 270	PC=00000064	INSTR=0xxxxxxxxx	RF[5]=0xxxxxxxxx RF[30]=0xxxxxxxxx GPIO_in=0x0000000f GPIO_out=0xxxxxxxxx GPIO_we=0
+# 280	PC=00000068	INSTR=0xxxxxxxxx	RF[5]=0xxxxxxxxx RF[30]=0xxxxxxxxx GPIO_in=0x0000000f GPIO_out=0xxxxxxxxx GPIO_we=0
+# 290	PC=0000006c	INSTR=0xxxxxxxxx	RF[5]=0xxxxxxxxx RF[30]=0xxxxxxxxx GPIO_in=0x0000000f GPIO_out=0xxxxxxxxx GPIO_we=0
+# 300	PC=00000070	INSTR=0xxxxxxxxx	RF[5]=0xxxxxxxxx RF[30]=0xxxxxxxxx GPIO_in=0x0000000f GPIO_out=0xxxxxxxxx GPIO_we=0
+# 310	PC=00000074	INSTR=0xxxxxxxxx	RF[5]=0xxxxxxxxx RF[30]=0xxxxxxxxx GPIO_in=0x0000000f GPIO_out=0xxxxxxxxx GPIO_we=0
+# 320	PC=00000078	INSTR=0xxxxxxxxx	RF[5]=0xxxxxxxxx RF[30]=0xxxxxxxxx GPIO_in=0x0000000f GPIO_out=0xxxxxxxxx GPIO_we=0
+# 330	PC=0000007c	INSTR=0xxxxxxxxx	RF[5]=0xxxxxxxxx RF[30]=0xxxxxxxxx GPIO_in=0x0000000f GPIO_out=0xxxxxxxxx GPIO_we=0
+# 340	PC=00000080	INSTR=0xxxxxxxxx	RF[5]=0xxxxxxxxx RF[30]=0xxxxxxxxx GPIO_in=0x0000000f GPIO_out=0xxxxxxxxx GPIO_we=0
+# 350	PC=00000084	INSTR=0xxxxxxxxx	RF[5]=0xxxxxxxxx RF[30]=0xxxxxxxxx GPIO_in=0x0000000f GPIO_out=0xxxxxxxxx GPIO_we=0
+# 360	PC=00000088	INSTR=0xxxxxxxxx	RF[5]=0xxxxxxxxx RF[30]=0xxxxxxxxx GPIO_in=0x0000000f GPIO_out=0xxxxxxxxx GPIO_we=0
+# 370	PC=0000008c	INSTR=0xxxxxxxxx	RF[5]=0xxxxxxxxx RF[30]=0xxxxxxxxx GPIO_in=0x0000000f GPIO_out=0xxxxxxxxx GPIO_we=0
+# 380	PC=00000090	INSTR=0xxxxxxxxx	RF[5]=0xxxxxxxxx RF[30]=0xxxxxxxxx GPIO_in=0x0000000f GPIO_out=0xxxxxxxxx GPIO_we=0
+# 390	PC=00000094	INSTR=0xxxxxxxxx	RF[5]=0xxxxxxxxx RF[30]=0xxxxxxxxx GPIO_in=0x0000000f GPIO_out=0xxxxxxxxx GPIO_we=0
+# 400	PC=00000098	INSTR=0xxxxxxxxx	RF[5]=0xxxxxxxxx RF[30]=0xxxxxxxxx GPIO_in=0x0000000f GPIO_out=0xxxxxxxxx GPIO_we=0
+# 410	PC=0000009c	INSTR=0xxxxxxxxx	RF[5]=0xxxxxxxxx RF[30]=0xxxxxxxxx GPIO_in=0x0000000f GPIO_out=0xxxxxxxxx GPIO_we=0
+# 420	PC=000000a0	INSTR=0xxxxxxxxx	RF[5]=0xxxxxxxxx RF[30]=0xxxxxxxxx GPIO_in=0x0000000f GPIO_out=0xxxxxxxxx GPIO_we=0
+# 430	PC=000000a4	INSTR=0xxxxxxxxx	RF[5]=0xxxxxxxxx RF[30]=0xxxxxxxxx GPIO_in=0x0000000f GPIO_out=0xxxxxxxxx GPIO_we=0
+# 440	PC=000000a8	INSTR=0xxxxxxxxx	RF[5]=0xxxxxxxxx RF[30]=0xxxxxxxxx GPIO_in=0x0000000f GPIO_out=0xxxxxxxxx GPIO_we=0
+# 450	PC=000000ac	INSTR=0xxxxxxxxx	RF[5]=0xxxxxxxxx RF[30]=0xxxxxxxxx GPIO_in=0x0000000f GPIO_out=0xxxxxxxxx GPIO_we=0
+# 460	PC=000000b0	INSTR=0xxxxxxxxx	RF[5]=0xxxxxxxxx RF[30]=0xxxxxxxxx GPIO_in=0x0000000f GPIO_out=0xxxxxxxxx GPIO_we=0
+# 470	PC=000000b4	INSTR=0xxxxxxxxx	RF[5]=0xxxxxxxxx RF[30]=0xxxxxxxxx GPIO_in=0x0000000f GPIO_out=0xxxxxxxxx GPIO_we=0
+# 480	PC=000000b8	INSTR=0xxxxxxxxx	RF[5]=0xxxxxxxxx RF[30]=0xxxxxxxxx GPIO_in=0x0000000f GPIO_out=0xxxxxxxxx GPIO_we=0
+# 490	PC=000000bc	INSTR=0xxxxxxxxx	RF[5]=0xxxxxxxxx RF[30]=0xxxxxxxxx GPIO_in=0x0000000f GPIO_out=0xxxxxxxxx GPIO_we=0
+# 500	PC=000000c0	INSTR=0xxxxxxxxx	RF[5]=0xxxxxxxxx RF[30]=0xxxxxxxxx GPIO_in=0x0000000f GPIO_out=0xxxxxxxxx GPIO_we=0
+# 510	PC=000000c4	INSTR=0xxxxxxxxx	RF[5]=0xxxxxxxxx RF[30]=0xxxxxxxxx GPIO_in=0x0000000f GPIO_out=0xxxxxxxxx GPIO_we=0
+# 520	PC=000000c8	INSTR=0xxxxxxxxx	RF[5]=0xxxxxxxxx RF[30]=0xxxxxxxxx GPIO_in=0x0000000f GPIO_out=0xxxxxxxxx GPIO_we=0
+# 530	PC=000000cc	INSTR=0xxxxxxxxx	RF[5]=0xxxxxxxxx RF[30]=0xxxxxxxxx GPIO_in=0x0000000f GPIO_out=0xxxxxxxxx GPIO_we=0
+# 540	PC=000000d0	INSTR=0xxxxxxxxx	RF[5]=0xxxxxxxxx RF[30]=0xxxxxxxxx GPIO_in=0x0000000f GPIO_out=0xxxxxxxxx GPIO_we=0
+# 550	PC=000000d4	INSTR=0xxxxxxxxx	RF[5]=0xxxxxxxxx RF[30]=0xxxxxxxxx GPIO_in=0x0000000f GPIO_out=0xxxxxxxxx GPIO_we=0
+# 560	PC=000000d8	INSTR=0xxxxxxxxx	RF[5]=0xxxxxxxxx RF[30]=0xxxxxxxxx GPIO_in=0x0000000f GPIO_out=0xxxxxxxxx GPIO_we=0
+# 570	PC=000000dc	INSTR=0xxxxxxxxx	RF[5]=0xxxxxxxxx RF[30]=0xxxxxxxxx GPIO_in=0x0000000f GPIO_out=0xxxxxxxxx GPIO_we=0
+# 580	PC=000000e0	INSTR=0xxxxxxxxx	RF[5]=0xxxxxxxxx RF[30]=0xxxxxxxxx GPIO_in=0x0000000f GPIO_out=0xxxxxxxxx GPIO_we=0
+# 590	PC=000000e4	INSTR=0xxxxxxxxx	RF[5]=0xxxxxxxxx RF[30]=0xxxxxxxxx GPIO_in=0x0000000f GPIO_out=0xxxxxxxxx GPIO_we=0
+# 600	PC=000000e8	INSTR=0xxxxxxxxx	RF[5]=0xxxxxxxxx RF[30]=0xxxxxxxxx GPIO_in=0x0000000f GPIO_out=0xxxxxxxxx GPIO_we=0
+# 610	PC=000000ec	INSTR=0xxxxxxxxx	RF[5]=0xxxxxxxxx RF[30]=0xxxxxxxxx GPIO_in=0x0000000f GPIO_out=0xxxxxxxxx GPIO_we=0
+# 620	PC=000000f0	INSTR=0xxxxxxxxx	RF[5]=0xxxxxxxxx RF[30]=0xxxxxxxxx GPIO_in=0x0000000f GPIO_out=0xxxxxxxxx GPIO_we=0
+# 630	PC=000000f4	INSTR=0xxxxxxxxx	RF[5]=0xxxxxxxxx RF[30]=0xxxxxxxxx GPIO_in=0x0000000f GPIO_out=0xxxxxxxxx GPIO_we=0
+# 640	PC=000000f8	INSTR=0xxxxxxxxx	RF[5]=0xxxxxxxxx RF[30]=0xxxxxxxxx GPIO_in=0x0000000f GPIO_out=0xxxxxxxxx GPIO_we=0
+# 650	PC=000000fc	INSTR=0xxxxxxxxx	RF[5]=0xxxxxxxxx RF[30]=0xxxxxxxxx GPIO_in=0x0000000f GPIO_out=0xxxxxxxxx GPIO_we=0
+# 660	PC=00000100	INSTR=0xxxxxxxxx	RF[5]=0xxxxxxxxx RF[30]=0xxxxxxxxx GPIO_in=0x0000000f GPIO_out=0xxxxxxxxx GPIO_we=0
+# 670	PC=00000104	INSTR=0xxxxxxxxx	RF[5]=0xxxxxxxxx RF[30]=0xxxxxxxxx GPIO_in=0x0000000f GPIO_out=0xxxxxxxxx GPIO_we=0
+# 680	PC=00000108	INSTR=0xxxxxxxxx	RF[5]=0xxxxxxxxx RF[30]=0xxxxxxxxx GPIO_in=0x0000000f GPIO_out=0xxxxxxxxx GPIO_we=0
+# 690	PC=0000010c	INSTR=0xxxxxxxxx	RF[5]=0xxxxxxxxx RF[30]=0xxxxxxxxx GPIO_in=0x0000000f GPIO_out=0xxxxxxxxx GPIO_we=0
+# 700	PC=00000110	INSTR=0xxxxxxxxx	RF[5]=0xxxxxxxxx RF[30]=0xxxxxxxxx GPIO_in=0x0000000f GPIO_out=0xxxxxxxxx GPIO_we=0
+# 710	PC=00000114	INSTR=0xxxxxxxxx	RF[5]=0xxxxxxxxx RF[30]=0xxxxxxxxx GPIO_in=0x0000000f GPIO_out=0xxxxxxxxx GPIO_we=0
+# 720	PC=00000118	INSTR=0xxxxxxxxx	RF[5]=0xxxxxxxxx RF[30]=0xxxxxxxxx GPIO_in=0x0000000f GPIO_out=0xxxxxxxxx GPIO_we=0
+# 
+# === Final Output ===
+# GPIO Output = 0xxxxxxxxx (dec x)
+# 
+# === Register Dump ===
+# t0 (x5)  = 0xxxxxxxxx
+# t5 (x30) = 0xxxxxxxxx
+# ** Note: $finish    : simtop.sv(77)
+#    Time: 720 ns  Iteration: 0  Instance: /simtop
+# End time: 01:28:30 on Oct 20,2025, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0

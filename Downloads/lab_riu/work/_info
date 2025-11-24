@@ -1,6 +1,7 @@
 m255
 K4
 z2
+!s11f vlog 2020.1 2020.01, Jan 28 2020
 13
 !s112 1.1
 !i10d 8192
@@ -8,153 +9,213 @@ z2
 !i10f 100
 cModel Technology
 Z0 d/acct/mcs46/Downloads/lab_riu
+T_opt
+!s110 1760937806
+VkB@L:39c3bH8S5b=O@63O0
+04 6 4 work simtop fast 0
+=1-000ae431a4f1-68f5c74e-617c2-196d07
+o-quiet -auto_acc_if_foreign -work work
+Z1 tCvgOpt 0
+n@_opt
+OL;O;2020.1;71
+R0
 valu
-Z1 DXx6 sv_std 3 std 0 22 9oUSJO;AeEaW`l:M@^WG92
-Z2 !s110 1760738828
+Z2 DXx6 sv_std 3 std 0 22 9oUSJO;AeEaW`l:M@^WG92
+Z3 !s110 1760938110
 !i10b 1
-!s100 Fz;21dl2PMZ6MFeGeLCUd1
-Z3 !s11b Dg1SIo80bB@j0V0VzS_@n1
-Idkda=b6UUa[8UodDQhYLI2
-Z4 VDg1SIo80bB@j0V0VzS_@n1
+!s100 dN:MoWLmjV48Z9Q`3=<3D3
+Z4 !s11b Dg1SIo80bB@j0V0VzS_@n1
+IDU;4fNC=KQo?l5SljSJZQ0
+Z5 VDg1SIo80bB@j0V0VzS_@n1
 S1
 R0
-w1760727676
+Z6 w1760933982
 8alu.sv
 Falu.sv
-!i122 9
-L0 7 48
-Z5 OL;L;2020.1;71
+!i122 3
+L0 6 46
+Z7 OL;L;2020.1;71
 r1
 !s85 0
 31
-Z6 !s108 1760738828.000000
+Z8 !s108 1760938110.000000
 !s107 top.sv|simtop.sv|riscv_32_instr_decoder.sv|regfile.sv|lut.sv|hexdriver.sv|ctrl_unit.sv|cpu.sv|alu.sv|
-Z7 !s90 -pedanticerrors|-lint|-hazards|-source|-stats=all|alu.sv|cpu.sv|ctrl_unit.sv|hexdriver.sv|lut.sv|regfile.sv|riscv_32_instr_decoder.sv|simtop.sv|top.sv|
+Z9 !s90 -pedanticerrors|-lint|-hazards|-source|-stats=all|alu.sv|cpu.sv|ctrl_unit.sv|hexdriver.sv|lut.sv|regfile.sv|riscv_32_instr_decoder.sv|simtop.sv|top.sv|
 !i113 0
-Z8 o-pedanticerrors -lint -hazards -source -L mtiAvm -L mtiRnm -L mtiOvm -L mtiUvm -L mtiUPF -L infact
-Z9 tCvgOpt 0
-vcpu
+Z10 o-pedanticerrors -lint -hazards -source -L mtiAvm -L mtiRnm -L mtiOvm -L mtiUvm -L mtiUPF -L infact
 R1
+vcpu
 R2
-!i10b 1
-!s100 ^`kUJ?P0DEMTSjWFf5g1l2
 R3
-Id]N34UOeXn_:2WHaFI?f^1
+!i10b 1
+!s100 =2R6KnX2_eQ<:9A]>7_HY3
 R4
+IfViYgckcO5fM`2j6:jmU20
+R5
 S1
 R0
-w1760738038
+w1760937776
 8cpu.sv
 Fcpu.sv
-!i122 9
-L0 3 156
-R5
+!i122 3
+L0 5 165
+R7
 r1
 !s85 0
 31
-R6
-Z10 !s107 top.sv|simtop.sv|riscv_32_instr_decoder.sv|regfile.sv|lut.sv|hexdriver.sv|ctrl_unit.sv|cpu.sv|alu.sv|
-R7
-!i113 0
 R8
+Z11 !s107 top.sv|simtop.sv|riscv_32_instr_decoder.sv|regfile.sv|lut.sv|hexdriver.sv|ctrl_unit.sv|cpu.sv|alu.sv|
 R9
-vctrl_unit
+!i113 0
+R10
 R1
+vctrl_unit
 R2
-!i10b 1
-!s100 NFK=Zheb`Velz6<jmP88=2
 R3
-IXWWPVDBD6<Wd6[?_8174b2
+!i10b 1
+!s100 T;mT73=KYn;Z0T`UNe@zJ0
 R4
+IFAQh<0dW]7UF^VMC2>nCd2
+R5
 S1
 R0
-w1760730696
+R6
 8ctrl_unit.sv
 Fctrl_unit.sv
-!i122 9
-L0 11 113
-R5
+!i122 3
+L0 7 116
+R7
 r1
 !s85 0
 31
-R6
-R10
-R7
-!i113 0
 R8
+R11
 R9
-vhexdriver
+!i113 0
+R10
 R1
+vhexdriver
 R2
-!i10b 1
-!s100 bNI]7EdDHAUW;OZ_P39hX3
 R3
-ILHCVJ]hmO7A3A;j`CA97z0
+!i10b 1
+!s100 Q;]bc4<9=_QX>QT:2`8230
 R4
+IhO1`PSa?0>o@f@5U1K`V[3
+R5
 S1
 R0
-w1760736259
+R6
 8hexdriver.sv
 Fhexdriver.sv
-!i122 9
-L0 1 26
-R5
+!i122 3
+L0 1 28
+R7
 r1
 !s85 0
 31
-R6
-R10
-R7
-!i113 0
 R8
+R11
 R9
-vregfile
+!i113 0
+R10
 R1
+vregfile
 R2
-!i10b 1
-!s100 OLmo^ODXC7EAjY`EG`6h[3
 R3
-IQ0FAHi]UX2l?:NknC^3`M3
+!i10b 1
+!s100 kYN4OCL5LlYQKzmznjcUo3
 R4
+I:WPR7zkjQ8Y3d=ZnnVc9Z1
+R5
 S1
 R0
-w1760736813
+R6
 8regfile.sv
 Fregfile.sv
-!i122 9
-L0 3 38
-R5
+!i122 3
+L0 3 55
+R7
 r1
 !s85 0
 31
-R6
-R10
-R7
-!i113 0
 R8
+R11
 R9
-vriscv_32_instr_decoder
+!i113 0
+R10
 R1
+vriscv_32_instr_decoder
 R2
+R3
 !i10b 1
 !s100 ZFLWM^n;JJPaTe=FTn2HV3
-R3
-ID:JlEW6AEE4>A8A56TXaP3
 R4
+ID:JlEW6AEE4>A8A56TXaP3
+R5
 S1
 R0
-w1760730524
+R6
 8riscv_32_instr_decoder.sv
 Friscv_32_instr_decoder.sv
-!i122 9
+!i122 3
 L0 7 40
-R5
+R7
 r1
 !s85 0
 31
-R6
-R10
-R7
-!i113 0
 R8
+R11
 R9
+!i113 0
+R10
+R1
+vsimtop
+R2
+R3
+!i10b 1
+!s100 3X73cIBX4N2[167^ZAQkj0
+R4
+I^NXSH@=Ln`KCUJRa7Eebn2
+R5
+S1
+R0
+R6
+8simtop.sv
+Fsimtop.sv
+!i122 3
+L0 1 116
+R7
+r1
+!s85 0
+31
+R8
+R11
+R9
+!i113 0
+R10
+R1
+vtop
+R2
+R3
+!i10b 1
+!s100 6iz0^?^UM^Z@;>`3oh0QU0
+R4
+I>BC7L:DeFYU0=]90z99eV1
+R5
+S1
+R0
+R6
+8top.sv
+Ftop.sv
+!i122 3
+L0 5 61
+R7
+r1
+!s85 0
+31
+R8
+R11
+R9
+!i113 0
+R10
+R1

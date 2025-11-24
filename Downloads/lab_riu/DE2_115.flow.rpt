@@ -1,5 +1,5 @@
 Flow report for DE2_115
-Fri Oct 17 18:06:15 2025
+Mon Nov 24 18:05:48 2025
 Quartus Prime Version 18.1.0 Build 625 09/12/2018 SJ Standard Edition
 
 
@@ -40,20 +40,20 @@ refer to the applicable agreement for further details.
 +--------------------------------------------------------------------------------------+
 ; Flow Summary                                                                         ;
 +------------------------------------+-------------------------------------------------+
-; Flow Status                        ; Successful - Fri Oct 17 18:06:13 2025           ;
+; Flow Status                        ; Successful - Mon Nov 24 18:05:45 2025           ;
 ; Quartus Prime Version              ; 18.1.0 Build 625 09/12/2018 SJ Standard Edition ;
 ; Revision Name                      ; DE2_115                                         ;
 ; Top-level Entity Name              ; top                                             ;
 ; Family                             ; Cyclone IV E                                    ;
 ; Device                             ; EP4CE115F29C7                                   ;
 ; Timing Models                      ; Final                                           ;
-; Total logic elements               ; 154 / 114,480 ( < 1 % )                         ;
-;     Total combinational functions  ; 141 / 114,480 ( < 1 % )                         ;
-;     Dedicated logic registers      ; 79 / 114,480 ( < 1 % )                          ;
-; Total registers                    ; 79                                              ;
+; Total logic elements               ; 615 / 114,480 ( < 1 % )                         ;
+;     Total combinational functions  ; 602 / 114,480 ( < 1 % )                         ;
+;     Dedicated logic registers      ; 224 / 114,480 ( < 1 % )                         ;
+; Total registers                    ; 224                                             ;
 ; Total pins                         ; 108 / 529 ( 20 % )                              ;
 ; Total virtual pins                 ; 0                                               ;
-; Total memory bits                  ; 1,024 / 3,981,312 ( < 1 % )                     ;
+; Total memory bits                  ; 2,048 / 3,981,312 ( < 1 % )                     ;
 ; Embedded Multiplier 9-bit elements ; 0 / 532 ( 0 % )                                 ;
 ; Total PLLs                         ; 0 / 4 ( 0 % )                                   ;
 +------------------------------------+-------------------------------------------------+
@@ -64,20 +64,23 @@ refer to the applicable agreement for further details.
 +-------------------+---------------------+
 ; Option            ; Setting             ;
 +-------------------+---------------------+
-; Start date & time ; 10/17/2025 18:05:54 ;
+; Start date & time ; 11/24/2025 18:05:23 ;
 ; Main task         ; Compilation         ;
 ; Revision Name     ; DE2_115             ;
 +-------------------+---------------------+
 
 
-+----------------------------------------------------------------------------------------------------+
-; Flow Non-Default Global Settings                                                                   ;
-+-----------------------+---------------------------------+---------------+-------------+------------+
-; Assignment Name       ; Value                           ; Default Value ; Entity Name ; Section Id ;
-+-----------------------+---------------------------------+---------------+-------------+------------+
-; COMPILER_SIGNATURE_ID ; 128122668291518.176073875400667 ; --            ; --          ; --         ;
-; TOP_LEVEL_ENTITY      ; top                             ; DE2_115       ; --          ; --         ;
-+-----------------------+---------------------------------+---------------+-------------+------------+
++-------------------------------------------------------------------------------------------------------------------------+
+; Flow Non-Default Global Settings                                                                                        ;
++-------------------------------------+----------------------------------------+---------------+-------------+------------+
+; Assignment Name                     ; Value                                  ; Default Value ; Entity Name ; Section Id ;
++-------------------------------------+----------------------------------------+---------------+-------------+------------+
+; COMPILER_SIGNATURE_ID               ; 128122668291466.176402552358397        ; --            ; --          ; --         ;
+; PARTITION_COLOR                     ; -- (Not supported for targeted family) ; --            ; top         ; Top        ;
+; PARTITION_FITTER_PRESERVATION_LEVEL ; -- (Not supported for targeted family) ; --            ; top         ; Top        ;
+; PARTITION_NETLIST_TYPE              ; -- (Not supported for targeted family) ; --            ; top         ; Top        ;
+; TOP_LEVEL_ENTITY                    ; top                                    ; DE2_115       ; --          ; --         ;
++-------------------------------------+----------------------------------------+---------------+-------------+------------+
 
 
 +--------------------------------------------------------------------------------------------------------------------------+
@@ -85,11 +88,11 @@ refer to the applicable agreement for further details.
 +----------------------+--------------+-------------------------+---------------------+------------------------------------+
 ; Module Name          ; Elapsed Time ; Average Processors Used ; Peak Virtual Memory ; Total CPU Time (on all processors) ;
 +----------------------+--------------+-------------------------+---------------------+------------------------------------+
-; Analysis & Synthesis ; 00:00:08     ; 1.0                     ; 1009 MB             ; 00:00:16                           ;
-; Fitter               ; 00:00:06     ; 1.0                     ; 2007 MB             ; 00:00:09                           ;
-; Assembler            ; 00:00:02     ; 1.0                     ; 808 MB              ; 00:00:02                           ;
-; Timing Analyzer      ; 00:00:01     ; 1.0                     ; 947 MB              ; 00:00:01                           ;
-; Total                ; 00:00:17     ; --                      ; --                  ; 00:00:28                           ;
+; Analysis & Synthesis ; 00:00:09     ; 1.0                     ; 1044 MB             ; 00:00:16                           ;
+; Fitter               ; 00:00:08     ; 1.0                     ; 2024 MB             ; 00:00:11                           ;
+; Assembler            ; 00:00:02     ; 1.0                     ; 810 MB              ; 00:00:02                           ;
+; Timing Analyzer      ; 00:00:02     ; 1.3                     ; 965 MB              ; 00:00:02                           ;
+; Total                ; 00:00:21     ; --                      ; --                  ; 00:00:31                           ;
 +----------------------+--------------+-------------------------+---------------------+------------------------------------+
 
 
@@ -98,10 +101,10 @@ refer to the applicable agreement for further details.
 +----------------------+------------------+----------------+------------+----------------+
 ; Module Name          ; Machine Hostname ; OS Name        ; OS Version ; Processor type ;
 +----------------------+------------------+----------------+------------+----------------+
-; Analysis & Synthesis ; cocsce-l3d22-10  ; Ubuntu 22.04.5 ; 22         ; x86_64         ;
-; Fitter               ; cocsce-l3d22-10  ; Ubuntu 22.04.5 ; 22         ; x86_64         ;
-; Assembler            ; cocsce-l3d22-10  ; Ubuntu 22.04.5 ; 22         ; x86_64         ;
-; Timing Analyzer      ; cocsce-l3d22-10  ; Ubuntu 22.04.5 ; 22         ; x86_64         ;
+; Analysis & Synthesis ; cocsce-l3d22-14  ; Ubuntu 22.04.5 ; 22         ; x86_64         ;
+; Fitter               ; cocsce-l3d22-14  ; Ubuntu 22.04.5 ; 22         ; x86_64         ;
+; Assembler            ; cocsce-l3d22-14  ; Ubuntu 22.04.5 ; 22         ; x86_64         ;
+; Timing Analyzer      ; cocsce-l3d22-14  ; Ubuntu 22.04.5 ; 22         ; x86_64         ;
 +----------------------+------------------+----------------+------------+----------------+
 
 

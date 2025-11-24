@@ -1,7 +1,8 @@
-Info (10281): Verilog HDL Declaration information at top.sv(26): object "HEX1" differs only in case from object "hex1" in the same scope File: /acct/mcs46/Downloads/lab_riu/top.sv Line: 26
-Info (10281): Verilog HDL Declaration information at top.sv(27): object "HEX2" differs only in case from object "hex2" in the same scope File: /acct/mcs46/Downloads/lab_riu/top.sv Line: 27
-Info (10281): Verilog HDL Declaration information at top.sv(28): object "HEX3" differs only in case from object "hex3" in the same scope File: /acct/mcs46/Downloads/lab_riu/top.sv Line: 28
-Info (10281): Verilog HDL Declaration information at top.sv(29): object "HEX4" differs only in case from object "hex4" in the same scope File: /acct/mcs46/Downloads/lab_riu/top.sv Line: 29
-Info (10281): Verilog HDL Declaration information at top.sv(30): object "HEX5" differs only in case from object "hex5" in the same scope File: /acct/mcs46/Downloads/lab_riu/top.sv Line: 30
-Info (10281): Verilog HDL Declaration information at top.sv(31): object "HEX6" differs only in case from object "hex6" in the same scope File: /acct/mcs46/Downloads/lab_riu/top.sv Line: 31
-Info (10281): Verilog HDL Declaration information at top.sv(33): object "HEX7" differs only in case from object "hex7" in the same scope File: /acct/mcs46/Downloads/lab_riu/top.sv Line: 33
+Info (10281): Verilog HDL Declaration information at top.sv(23): object "HEX0" differs only in case from object "hex0" in the same scope File: /acct/mcs46/Downloads/lab_riu/top.sv Line: 23
+Info (10281): Verilog HDL Declaration information at top.sv(24): object "HEX1" differs only in case from object "hex1" in the same scope File: /acct/mcs46/Downloads/lab_riu/top.sv Line: 24
+Info (10281): Verilog HDL Declaration information at top.sv(25): object "HEX2" differs only in case from object "hex2" in the same scope File: /acct/mcs46/Downloads/lab_riu/top.sv Line: 25
+Info (10281): Verilog HDL Declaration information at top.sv(26): object "HEX3" differs only in case from object "hex3" in the same scope File: /acct/mcs46/Downloads/lab_riu/top.sv Line: 26
+Info (10281): Verilog HDL Declaration information at top.sv(27): object "HEX4" differs only in case from object "hex4" in the same scope File: /acct/mcs46/Downloads/lab_riu/top.sv Line: 27
+Info (10281): Verilog HDL Declaration information at top.sv(28): object "HEX5" differs only in case from object "hex5" in the same scope File: /acct/mcs46/Downloads/lab_riu/top.sv Line: 28
+Info (10281): Verilog HDL Declaration information at top.sv(29): object "HEX6" differs only in case from object "hex6" in the same scope File: /acct/mcs46/Downloads/lab_riu/top.sv Line: 29
+Info (10281): Verilog HDL Declaration information at top.sv(31): object "HEX7" differs only in case from object "hex7" in the same scope File: /acct/mcs46/Downloads/lab_riu/top.sv Line: 31

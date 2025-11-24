@@ -1,5 +1,5 @@
 Analysis & Synthesis report for DE2_115
-Fri Oct 17 18:06:02 2025
+Mon Nov 24 18:05:33 2025
 Quartus Prime Version 18.1.0 Build 625 09/12/2018 SJ Standard Edition
 
 
@@ -15,17 +15,20 @@ Quartus Prime Version 18.1.0 Build 625 09/12/2018 SJ Standard Edition
   7. Analysis & Synthesis Resource Utilization by Entity
   8. Analysis & Synthesis RAM Summary
   9. Registers Removed During Synthesis
- 10. General Register Statistics
- 11. Registers Added for RAM Pass-Through Logic
- 12. Multiplexer Restructuring Statistics (Restructuring Performed)
- 13. Source assignments for cpu:my_cpu|regfile:rf|altsyncram:mem_rtl_0|altsyncram_mcc1:auto_generated
- 14. Parameter Settings for Inferred Entity Instance: cpu:my_cpu|regfile:rf|altsyncram:mem_rtl_0
- 15. altsyncram Parameter Settings by Entity Instance
- 16. Port Connectivity Checks: "cpu:my_cpu|alu:alu_inst"
- 17. Post-Synthesis Netlist Statistics for Top Partition
- 18. Elapsed Time Per Partition
- 19. Analysis & Synthesis Messages
- 20. Analysis & Synthesis Suppressed Messages
+ 10. Removed Registers Triggering Further Register Optimizations
+ 11. General Register Statistics
+ 12. Registers Added for RAM Pass-Through Logic
+ 13. Multiplexer Restructuring Statistics (Restructuring Performed)
+ 14. Source assignments for cpu:my_cpu|regfile:rf|altsyncram:mem_rtl_0|altsyncram_mcc1:auto_generated
+ 15. Source assignments for cpu:my_cpu|regfile:rf|altsyncram:mem_rtl_1|altsyncram_mcc1:auto_generated
+ 16. Parameter Settings for Inferred Entity Instance: cpu:my_cpu|regfile:rf|altsyncram:mem_rtl_0
+ 17. Parameter Settings for Inferred Entity Instance: cpu:my_cpu|regfile:rf|altsyncram:mem_rtl_1
+ 18. altsyncram Parameter Settings by Entity Instance
+ 19. Port Connectivity Checks: "cpu:my_cpu"
+ 20. Post-Synthesis Netlist Statistics for Top Partition
+ 21. Elapsed Time Per Partition
+ 22. Analysis & Synthesis Messages
+ 23. Analysis & Synthesis Suppressed Messages
 
 
 
@@ -51,18 +54,18 @@ refer to the applicable agreement for further details.
 +--------------------------------------------------------------------------------------+
 ; Analysis & Synthesis Summary                                                         ;
 +------------------------------------+-------------------------------------------------+
-; Analysis & Synthesis Status        ; Successful - Fri Oct 17 18:06:02 2025           ;
+; Analysis & Synthesis Status        ; Successful - Mon Nov 24 18:05:33 2025           ;
 ; Quartus Prime Version              ; 18.1.0 Build 625 09/12/2018 SJ Standard Edition ;
 ; Revision Name                      ; DE2_115                                         ;
 ; Top-level Entity Name              ; top                                             ;
 ; Family                             ; Cyclone IV E                                    ;
-; Total logic elements               ; 150                                             ;
-;     Total combinational functions  ; 141                                             ;
-;     Dedicated logic registers      ; 79                                              ;
-; Total registers                    ; 79                                              ;
+; Total logic elements               ; 685                                             ;
+;     Total combinational functions  ; 602                                             ;
+;     Dedicated logic registers      ; 224                                             ;
+; Total registers                    ; 224                                             ;
 ; Total pins                         ; 108                                             ;
 ; Total virtual pins                 ; 0                                               ;
-; Total memory bits                  ; 1,024                                           ;
+; Total memory bits                  ; 2,048                                           ;
 ; Embedded Multiplier 9-bit elements ; 0                                               ;
 ; Total PLLs                         ; 0                                               ;
 +------------------------------------+-------------------------------------------------+
@@ -167,7 +170,13 @@ refer to the applicable agreement for further details.
 ;                            ;             ;
 ; Usage by Processor         ; % Time Used ;
 ;     Processor 1            ; 100.0%      ;
-;     Processors 2-8         ;   0.0%      ;
+;     Processor 2            ;   0.0%      ;
+;     Processor 3            ;   0.0%      ;
+;     Processor 4            ;   0.0%      ;
+;     Processor 5            ;   0.0%      ;
+;     Processor 6            ;   0.0%      ;
+;     Processor 7            ;   0.0%      ;
+;     Processor 8            ;   0.0%      ;
 +----------------------------+-------------+
 
 
@@ -202,31 +211,31 @@ refer to the applicable agreement for further details.
 +---------------------------------------------+----------------+
 ; Resource                                    ; Usage          ;
 +---------------------------------------------+----------------+
-; Estimated Total logic elements              ; 150            ;
+; Estimated Total logic elements              ; 685            ;
 ;                                             ;                ;
-; Total combinational functions               ; 141            ;
+; Total combinational functions               ; 602            ;
 ; Logic element usage by number of LUT inputs ;                ;
-;     -- 4 input functions                    ; 86             ;
-;     -- 3 input functions                    ; 40             ;
-;     -- <=2 input functions                  ; 15             ;
+;     -- 4 input functions                    ; 354            ;
+;     -- 3 input functions                    ; 138            ;
+;     -- <=2 input functions                  ; 110            ;
 ;                                             ;                ;
 ; Logic elements by mode                      ;                ;
-;     -- normal mode                          ; 132            ;
-;     -- arithmetic mode                      ; 9              ;
+;     -- normal mode                          ; 454            ;
+;     -- arithmetic mode                      ; 148            ;
 ;                                             ;                ;
-; Total registers                             ; 79             ;
-;     -- Dedicated logic registers            ; 79             ;
+; Total registers                             ; 224            ;
+;     -- Dedicated logic registers            ; 224            ;
 ;     -- I/O registers                        ; 0              ;
 ;                                             ;                ;
 ; I/O pins                                    ; 108            ;
-; Total memory bits                           ; 1024           ;
+; Total memory bits                           ; 2048           ;
 ;                                             ;                ;
 ; Embedded Multiplier 9-bit elements          ; 0              ;
 ;                                             ;                ;
 ; Maximum fan-out node                        ; CLOCK_50~input ;
-; Maximum fan-out                             ; 111            ;
-; Total fan-out                               ; 1250           ;
-; Average fan-out                             ; 2.67           ;
+; Maximum fan-out                             ; 288            ;
+; Total fan-out                               ; 3178           ;
+; Average fan-out                             ; 2.87           ;
 +---------------------------------------------+----------------+
 
 
@@ -235,12 +244,16 @@ refer to the applicable agreement for further details.
 +----------------------------------------------+---------------------+---------------------------+-------------+--------------+---------+-----------+------+--------------+--------------------------------------------------------------------------------+-----------------+--------------+
 ; Compilation Hierarchy Node                   ; Combinational ALUTs ; Dedicated Logic Registers ; Memory Bits ; DSP Elements ; DSP 9x9 ; DSP 18x18 ; Pins ; Virtual Pins ; Full Hierarchy Name                                                            ; Entity Name     ; Library Name ;
 +----------------------------------------------+---------------------+---------------------------+-------------+--------------+---------+-----------+------+--------------+--------------------------------------------------------------------------------+-----------------+--------------+
-; |top                                         ; 141 (1)             ; 79 (0)                    ; 1024        ; 0            ; 0       ; 0         ; 108  ; 0            ; |top                                                                           ; top             ; work         ;
-;    |cpu:my_cpu|                              ; 84 (78)             ; 79 (51)                   ; 1024        ; 0            ; 0       ; 0         ; 0    ; 0            ; |top|cpu:my_cpu                                                                ; cpu             ; work         ;
-;       |ctrl_unit:ctrl|                       ; 1 (1)               ; 0 (0)                     ; 0           ; 0            ; 0       ; 0         ; 0    ; 0            ; |top|cpu:my_cpu|ctrl_unit:ctrl                                                 ; ctrl_unit       ; work         ;
-;       |regfile:rf|                           ; 5 (5)               ; 28 (28)                   ; 1024        ; 0            ; 0       ; 0         ; 0    ; 0            ; |top|cpu:my_cpu|regfile:rf                                                     ; regfile         ; work         ;
+; |top                                         ; 602 (1)             ; 224 (0)                   ; 2048        ; 0            ; 0       ; 0         ; 108  ; 0            ; |top                                                                           ; top             ; work         ;
+;    |cpu:my_cpu|                              ; 545 (376)           ; 224 (111)                 ; 2048        ; 0            ; 0       ; 0         ; 0    ; 0            ; |top|cpu:my_cpu                                                                ; cpu             ; work         ;
+;       |alu:alu_inst|                         ; 73 (73)             ; 0 (0)                     ; 0           ; 0            ; 0       ; 0         ; 0    ; 0            ; |top|cpu:my_cpu|alu:alu_inst                                                   ; alu             ; work         ;
+;       |ctrl_unit:ctrl|                       ; 6 (6)               ; 0 (0)                     ; 0           ; 0            ; 0       ; 0         ; 0    ; 0            ; |top|cpu:my_cpu|ctrl_unit:ctrl                                                 ; ctrl_unit       ; work         ;
+;       |regfile:rf|                           ; 90 (90)             ; 113 (113)                 ; 2048        ; 0            ; 0       ; 0         ; 0    ; 0            ; |top|cpu:my_cpu|regfile:rf                                                     ; regfile         ; work         ;
 ;          |altsyncram:mem_rtl_0|              ; 0 (0)               ; 0 (0)                     ; 1024        ; 0            ; 0       ; 0         ; 0    ; 0            ; |top|cpu:my_cpu|regfile:rf|altsyncram:mem_rtl_0                                ; altsyncram      ; work         ;
 ;             |altsyncram_mcc1:auto_generated| ; 0 (0)               ; 0 (0)                     ; 1024        ; 0            ; 0       ; 0         ; 0    ; 0            ; |top|cpu:my_cpu|regfile:rf|altsyncram:mem_rtl_0|altsyncram_mcc1:auto_generated ; altsyncram_mcc1 ; work         ;
+;          |altsyncram:mem_rtl_1|              ; 0 (0)               ; 0 (0)                     ; 1024        ; 0            ; 0       ; 0         ; 0    ; 0            ; |top|cpu:my_cpu|regfile:rf|altsyncram:mem_rtl_1                                ; altsyncram      ; work         ;
+;             |altsyncram_mcc1:auto_generated| ; 0 (0)               ; 0 (0)                     ; 1024        ; 0            ; 0       ; 0         ; 0    ; 0            ; |top|cpu:my_cpu|regfile:rf|altsyncram:mem_rtl_1|altsyncram_mcc1:auto_generated ; altsyncram_mcc1 ; work         ;
+;    |hexdriver:hex0|                          ; 7 (7)               ; 0 (0)                     ; 0           ; 0            ; 0       ; 0         ; 0    ; 0            ; |top|hexdriver:hex0                                                            ; hexdriver       ; work         ;
 ;    |hexdriver:hex1|                          ; 7 (7)               ; 0 (0)                     ; 0           ; 0            ; 0       ; 0         ; 0    ; 0            ; |top|hexdriver:hex1                                                            ; hexdriver       ; work         ;
 ;    |hexdriver:hex2|                          ; 7 (7)               ; 0 (0)                     ; 0           ; 0            ; 0       ; 0         ; 0    ; 0            ; |top|hexdriver:hex2                                                            ; hexdriver       ; work         ;
 ;    |hexdriver:hex3|                          ; 7 (7)               ; 0 (0)                     ; 0           ; 0            ; 0       ; 0         ; 0    ; 0            ; |top|hexdriver:hex3                                                            ; hexdriver       ; work         ;
@@ -248,7 +261,6 @@ refer to the applicable agreement for further details.
 ;    |hexdriver:hex5|                          ; 7 (7)               ; 0 (0)                     ; 0           ; 0            ; 0       ; 0         ; 0    ; 0            ; |top|hexdriver:hex5                                                            ; hexdriver       ; work         ;
 ;    |hexdriver:hex6|                          ; 7 (7)               ; 0 (0)                     ; 0           ; 0            ; 0       ; 0         ; 0    ; 0            ; |top|hexdriver:hex6                                                            ; hexdriver       ; work         ;
 ;    |hexdriver:hex7|                          ; 7 (7)               ; 0 (0)                     ; 0           ; 0            ; 0       ; 0         ; 0    ; 0            ; |top|hexdriver:hex7                                                            ; hexdriver       ; work         ;
-;    |hexdriver:hex|                           ; 7 (7)               ; 0 (0)                     ; 0           ; 0            ; 0       ; 0         ; 0    ; 0            ; |top|hexdriver:hex                                                             ; hexdriver       ; work         ;
 +----------------------------------------------+---------------------+---------------------------+-------------+--------------+---------+-----------+------+--------------+--------------------------------------------------------------------------------+-----------------+--------------+
 Note: For table entries with two numbers listed, the numbers in parentheses indicate the number of resources of the given type used by the specific entity alone. The numbers listed outside of parentheses indicate the total resources of the given type used by the specific entity and all of its sub-entities in the hierarchy.
 
@@ -259,27 +271,45 @@ Note: For table entries with two numbers listed, the numbers in parentheses indi
 ; Name                                                                                 ; Type ; Mode             ; Port A Depth ; Port A Width ; Port B Depth ; Port B Width ; Size ; MIF  ;
 +--------------------------------------------------------------------------------------+------+------------------+--------------+--------------+--------------+--------------+------+------+
 ; cpu:my_cpu|regfile:rf|altsyncram:mem_rtl_0|altsyncram_mcc1:auto_generated|ALTSYNCRAM ; AUTO ; Simple Dual Port ; 32           ; 32           ; 32           ; 32           ; 1024 ; None ;
+; cpu:my_cpu|regfile:rf|altsyncram:mem_rtl_1|altsyncram_mcc1:auto_generated|ALTSYNCRAM ; AUTO ; Simple Dual Port ; 32           ; 32           ; 32           ; 32           ; 1024 ; None ;
 +--------------------------------------------------------------------------------------+------+------------------+--------------+--------------+--------------+--------------+------+------+
 
 
-+-----------------------------------------------------------------------------------------------------+
-; Registers Removed During Synthesis                                                                  ;
-+---------------------------------------------------------+-------------------------------------------+
-; Register name                                           ; Reason for Removal                        ;
-+---------------------------------------------------------+-------------------------------------------+
-; cpu:my_cpu|regfile:rf|mem_rtl_0_bypass[2]               ; Stuck at GND due to stuck port data_in    ;
-; cpu:my_cpu|instruction_EX[2,3,13..15,25..27]            ; Stuck at GND due to stuck port data_in    ;
-; cpu:my_cpu|regfile:rf|mem_rtl_0_bypass[31,33..38]       ; Stuck at GND due to stuck port data_in    ;
-; cpu:my_cpu|instruction_EX[1,4,9]                        ; Merged with cpu:my_cpu|instruction_EX[0]  ;
-; cpu:my_cpu|instruction_EX[5]                            ; Merged with cpu:my_cpu|instruction_EX[17] ;
-; cpu:my_cpu|instruction_EX[6,18,19,28..31]               ; Merged with cpu:my_cpu|instruction_EX[12] ;
-; cpu:my_cpu|instruction_EX[22]                           ; Merged with cpu:my_cpu|instruction_EX[21] ;
-; cpu:my_cpu|instruction_EX[8]                            ; Merged with cpu:my_cpu|instruction_EX[23] ;
-; cpu:my_cpu|instruction_EX[11,16]                        ; Merged with cpu:my_cpu|instruction_EX[10] ;
-; cpu:my_cpu|regfile:rf|mem_rtl_0_bypass[29,30,32,39..42] ; Stuck at GND due to stuck port data_in    ;
-; cpu:my_cpu|pc_F[12..31]                                 ; Lost fanout                               ;
-; Total Number of Removed Registers = 58                  ;                                           ;
-+---------------------------------------------------------+-------------------------------------------+
++----------------------------------------------------------------------------------------------------------+
+; Registers Removed During Synthesis                                                                       ;
++----------------------------------------------------+-----------------------------------------------------+
+; Register name                                      ; Reason for Removal                                  ;
++----------------------------------------------------+-----------------------------------------------------+
+; cpu:my_cpu|regfile:rf|mem_rtl_1_bypass[6]          ; Stuck at GND due to stuck port data_in              ;
+; cpu:my_cpu|instruction_EX[8,10,11,22]              ; Stuck at GND due to stuck port data_in              ;
+; cpu:my_cpu|regfile:rf|mem_rtl_0_bypass[3,7,9]      ; Stuck at GND due to stuck port data_in              ;
+; cpu:my_cpu|regfile:rf|mem_rtl_1_bypass[3,7,9]      ; Stuck at GND due to stuck port data_in              ;
+; cpu:my_cpu|regfile:rf|writeaddr_prev[1,3,4]        ; Stuck at GND due to stuck port data_in              ;
+; cpu:my_cpu|instruction_EX[2,3,14,16,18..20,23..27] ; Merged with cpu:my_cpu|instruction_EX[13]           ;
+; cpu:my_cpu|regfile:rf|writeaddr_prev[2]            ; Merged with cpu:my_cpu|regfile:rf|writeaddr_prev[0] ;
+; cpu:my_cpu|instruction_EX[1,5,6,12,28..31]         ; Merged with cpu:my_cpu|instruction_EX[0]            ;
+; cpu:my_cpu|instruction_EX[9]                       ; Merged with cpu:my_cpu|instruction_EX[7]            ;
+; cpu:my_cpu|funct3_reg[2]                           ; Merged with cpu:my_cpu|funct3_reg[1]                ;
+; cpu:my_cpu|instruction_EX[17]                      ; Merged with cpu:my_cpu|instruction_EX[15]           ;
+; cpu:my_cpu|aluop_EX_reg[1]                         ; Stuck at GND due to stuck port data_in              ;
+; cpu:my_cpu|alusrc_EX_reg[0,1]                      ; Stuck at GND due to stuck port data_in              ;
+; cpu:my_cpu|aluop_EX_reg[0,3]                       ; Stuck at GND due to stuck port data_in              ;
+; Total Number of Removed Registers = 43             ;                                                     ;
++----------------------------------------------------+-----------------------------------------------------+
+
+
++------------------------------------------------------------------------------------------------------------------------------------------------+
+; Removed Registers Triggering Further Register Optimizations                                                                                    ;
++-------------------------------+---------------------------+------------------------------------------------------------------------------------+
+; Register name                 ; Reason for Removal        ; Registers Removed due to This Register                                             ;
++-------------------------------+---------------------------+------------------------------------------------------------------------------------+
+; cpu:my_cpu|instruction_EX[8]  ; Stuck at GND              ; cpu:my_cpu|regfile:rf|mem_rtl_0_bypass[3],                                         ;
+;                               ; due to stuck port data_in ; cpu:my_cpu|regfile:rf|mem_rtl_1_bypass[3], cpu:my_cpu|regfile:rf|writeaddr_prev[1] ;
+; cpu:my_cpu|instruction_EX[10] ; Stuck at GND              ; cpu:my_cpu|regfile:rf|mem_rtl_0_bypass[7],                                         ;
+;                               ; due to stuck port data_in ; cpu:my_cpu|regfile:rf|mem_rtl_1_bypass[7], cpu:my_cpu|regfile:rf|writeaddr_prev[3] ;
+; cpu:my_cpu|instruction_EX[11] ; Stuck at GND              ; cpu:my_cpu|regfile:rf|mem_rtl_0_bypass[9],                                         ;
+;                               ; due to stuck port data_in ; cpu:my_cpu|regfile:rf|mem_rtl_1_bypass[9], cpu:my_cpu|regfile:rf|writeaddr_prev[4] ;
++-------------------------------+---------------------------+------------------------------------------------------------------------------------+
 
 
 +------------------------------------------------------+
@@ -287,9 +317,9 @@ Note: For table entries with two numbers listed, the numbers in parentheses indi
 +----------------------------------------------+-------+
 ; Statistic                                    ; Value ;
 +----------------------------------------------+-------+
-; Total registers                              ; 79    ;
-; Number of registers using Synchronous Clear  ; 31    ;
-; Number of registers using Synchronous Load   ; 18    ;
+; Total registers                              ; 224   ;
+; Number of registers using Synchronous Clear  ; 40    ;
+; Number of registers using Synchronous Load   ; 0     ;
 ; Number of registers using Asynchronous Clear ; 0     ;
 ; Number of registers using Asynchronous Load  ; 0     ;
 ; Number of registers using Clock Enable       ; 32    ;
@@ -345,22 +375,86 @@ Note: For table entries with two numbers listed, the numbers in parentheses indi
 ; cpu:my_cpu|regfile:rf|mem_rtl_0_bypass[40] ; cpu:my_cpu|regfile:rf|mem_rtl_0 ;
 ; cpu:my_cpu|regfile:rf|mem_rtl_0_bypass[41] ; cpu:my_cpu|regfile:rf|mem_rtl_0 ;
 ; cpu:my_cpu|regfile:rf|mem_rtl_0_bypass[42] ; cpu:my_cpu|regfile:rf|mem_rtl_0 ;
+; cpu:my_cpu|regfile:rf|mem_rtl_1_bypass[0]  ; cpu:my_cpu|regfile:rf|mem_rtl_1 ;
+; cpu:my_cpu|regfile:rf|mem_rtl_1_bypass[1]  ; cpu:my_cpu|regfile:rf|mem_rtl_1 ;
+; cpu:my_cpu|regfile:rf|mem_rtl_1_bypass[2]  ; cpu:my_cpu|regfile:rf|mem_rtl_1 ;
+; cpu:my_cpu|regfile:rf|mem_rtl_1_bypass[3]  ; cpu:my_cpu|regfile:rf|mem_rtl_1 ;
+; cpu:my_cpu|regfile:rf|mem_rtl_1_bypass[4]  ; cpu:my_cpu|regfile:rf|mem_rtl_1 ;
+; cpu:my_cpu|regfile:rf|mem_rtl_1_bypass[5]  ; cpu:my_cpu|regfile:rf|mem_rtl_1 ;
+; cpu:my_cpu|regfile:rf|mem_rtl_1_bypass[6]  ; cpu:my_cpu|regfile:rf|mem_rtl_1 ;
+; cpu:my_cpu|regfile:rf|mem_rtl_1_bypass[7]  ; cpu:my_cpu|regfile:rf|mem_rtl_1 ;
+; cpu:my_cpu|regfile:rf|mem_rtl_1_bypass[8]  ; cpu:my_cpu|regfile:rf|mem_rtl_1 ;
+; cpu:my_cpu|regfile:rf|mem_rtl_1_bypass[9]  ; cpu:my_cpu|regfile:rf|mem_rtl_1 ;
+; cpu:my_cpu|regfile:rf|mem_rtl_1_bypass[10] ; cpu:my_cpu|regfile:rf|mem_rtl_1 ;
+; cpu:my_cpu|regfile:rf|mem_rtl_1_bypass[11] ; cpu:my_cpu|regfile:rf|mem_rtl_1 ;
+; cpu:my_cpu|regfile:rf|mem_rtl_1_bypass[12] ; cpu:my_cpu|regfile:rf|mem_rtl_1 ;
+; cpu:my_cpu|regfile:rf|mem_rtl_1_bypass[13] ; cpu:my_cpu|regfile:rf|mem_rtl_1 ;
+; cpu:my_cpu|regfile:rf|mem_rtl_1_bypass[14] ; cpu:my_cpu|regfile:rf|mem_rtl_1 ;
+; cpu:my_cpu|regfile:rf|mem_rtl_1_bypass[15] ; cpu:my_cpu|regfile:rf|mem_rtl_1 ;
+; cpu:my_cpu|regfile:rf|mem_rtl_1_bypass[16] ; cpu:my_cpu|regfile:rf|mem_rtl_1 ;
+; cpu:my_cpu|regfile:rf|mem_rtl_1_bypass[17] ; cpu:my_cpu|regfile:rf|mem_rtl_1 ;
+; cpu:my_cpu|regfile:rf|mem_rtl_1_bypass[18] ; cpu:my_cpu|regfile:rf|mem_rtl_1 ;
+; cpu:my_cpu|regfile:rf|mem_rtl_1_bypass[19] ; cpu:my_cpu|regfile:rf|mem_rtl_1 ;
+; cpu:my_cpu|regfile:rf|mem_rtl_1_bypass[20] ; cpu:my_cpu|regfile:rf|mem_rtl_1 ;
+; cpu:my_cpu|regfile:rf|mem_rtl_1_bypass[21] ; cpu:my_cpu|regfile:rf|mem_rtl_1 ;
+; cpu:my_cpu|regfile:rf|mem_rtl_1_bypass[22] ; cpu:my_cpu|regfile:rf|mem_rtl_1 ;
+; cpu:my_cpu|regfile:rf|mem_rtl_1_bypass[23] ; cpu:my_cpu|regfile:rf|mem_rtl_1 ;
+; cpu:my_cpu|regfile:rf|mem_rtl_1_bypass[24] ; cpu:my_cpu|regfile:rf|mem_rtl_1 ;
+; cpu:my_cpu|regfile:rf|mem_rtl_1_bypass[25] ; cpu:my_cpu|regfile:rf|mem_rtl_1 ;
+; cpu:my_cpu|regfile:rf|mem_rtl_1_bypass[26] ; cpu:my_cpu|regfile:rf|mem_rtl_1 ;
+; cpu:my_cpu|regfile:rf|mem_rtl_1_bypass[27] ; cpu:my_cpu|regfile:rf|mem_rtl_1 ;
+; cpu:my_cpu|regfile:rf|mem_rtl_1_bypass[28] ; cpu:my_cpu|regfile:rf|mem_rtl_1 ;
+; cpu:my_cpu|regfile:rf|mem_rtl_1_bypass[29] ; cpu:my_cpu|regfile:rf|mem_rtl_1 ;
+; cpu:my_cpu|regfile:rf|mem_rtl_1_bypass[30] ; cpu:my_cpu|regfile:rf|mem_rtl_1 ;
+; cpu:my_cpu|regfile:rf|mem_rtl_1_bypass[31] ; cpu:my_cpu|regfile:rf|mem_rtl_1 ;
+; cpu:my_cpu|regfile:rf|mem_rtl_1_bypass[32] ; cpu:my_cpu|regfile:rf|mem_rtl_1 ;
+; cpu:my_cpu|regfile:rf|mem_rtl_1_bypass[33] ; cpu:my_cpu|regfile:rf|mem_rtl_1 ;
+; cpu:my_cpu|regfile:rf|mem_rtl_1_bypass[34] ; cpu:my_cpu|regfile:rf|mem_rtl_1 ;
+; cpu:my_cpu|regfile:rf|mem_rtl_1_bypass[35] ; cpu:my_cpu|regfile:rf|mem_rtl_1 ;
+; cpu:my_cpu|regfile:rf|mem_rtl_1_bypass[36] ; cpu:my_cpu|regfile:rf|mem_rtl_1 ;
+; cpu:my_cpu|regfile:rf|mem_rtl_1_bypass[37] ; cpu:my_cpu|regfile:rf|mem_rtl_1 ;
+; cpu:my_cpu|regfile:rf|mem_rtl_1_bypass[38] ; cpu:my_cpu|regfile:rf|mem_rtl_1 ;
+; cpu:my_cpu|regfile:rf|mem_rtl_1_bypass[39] ; cpu:my_cpu|regfile:rf|mem_rtl_1 ;
+; cpu:my_cpu|regfile:rf|mem_rtl_1_bypass[40] ; cpu:my_cpu|regfile:rf|mem_rtl_1 ;
+; cpu:my_cpu|regfile:rf|mem_rtl_1_bypass[41] ; cpu:my_cpu|regfile:rf|mem_rtl_1 ;
+; cpu:my_cpu|regfile:rf|mem_rtl_1_bypass[42] ; cpu:my_cpu|regfile:rf|mem_rtl_1 ;
 +--------------------------------------------+---------------------------------+
 
 
-+------------------------------------------------------------------------------------------------------------------------------------------------+
-; Multiplexer Restructuring Statistics (Restructuring Performed)                                                                                 ;
-+--------------------+-----------+---------------+----------------------+------------------------+------------+----------------------------------+
-; Multiplexer Inputs ; Bus Width ; Baseline Area ; Area if Restructured ; Saving if Restructured ; Registered ; Example Multiplexer Output       ;
-+--------------------+-----------+---------------+----------------------+------------------------+------------+----------------------------------+
-; 6:1                ; 3 bits    ; 12 LEs        ; 3 LEs                ; 9 LEs                  ; Yes        ; |top|cpu:my_cpu|gpio_out_reg[25] ;
-; 6:1                ; 29 bits   ; 116 LEs       ; 58 LEs               ; 58 LEs                 ; Yes        ; |top|cpu:my_cpu|gpio_out_reg[2]  ;
-; 4:1                ; 3 bits    ; 6 LEs         ; 6 LEs                ; 0 LEs                  ; No         ; |top|cpu:my_cpu|Mux33            ;
-+--------------------+-----------+---------------+----------------------+------------------------+------------+----------------------------------+
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+; Multiplexer Restructuring Statistics (Restructuring Performed)                                                                                         ;
++--------------------+-----------+---------------+----------------------+------------------------+------------+------------------------------------------+
+; Multiplexer Inputs ; Bus Width ; Baseline Area ; Area if Restructured ; Saving if Restructured ; Registered ; Example Multiplexer Output               ;
++--------------------+-----------+---------------+----------------------+------------------------+------------+------------------------------------------+
+; 3:1                ; 32 bits   ; 64 LEs        ; 32 LEs               ; 32 LEs                 ; Yes        ; |top|cpu:my_cpu|gpio_out_reg[2]          ;
+; 5:1                ; 30 bits   ; 90 LEs        ; 90 LEs               ; 0 LEs                  ; Yes        ; |top|cpu:my_cpu|pc_F[31]                 ;
+; 5:1                ; 12 bits   ; 36 LEs        ; 24 LEs               ; 12 LEs                 ; No         ; |top|cpu:my_cpu|Mux54                    ;
+; 5:1                ; 13 bits   ; 39 LEs        ; 39 LEs               ; 0 LEs                  ; No         ; |top|cpu:my_cpu|Mux33                    ;
+; 5:1                ; 6 bits    ; 18 LEs        ; 12 LEs               ; 6 LEs                  ; No         ; |top|cpu:my_cpu|Mux49                    ;
+; 4:1                ; 32 bits   ; 64 LEs        ; 64 LEs               ; 0 LEs                  ; No         ; |top|cpu:my_cpu|regfile:rf|readdata1[24] ;
+; 6:1                ; 2 bits    ; 8 LEs         ; 4 LEs                ; 4 LEs                  ; No         ; |top|cpu:my_cpu|Mux21                    ;
+; 6:1                ; 19 bits   ; 76 LEs        ; 57 LEs               ; 19 LEs                 ; No         ; |top|cpu:my_cpu|Mux13                    ;
+; 7:1                ; 10 bits   ; 40 LEs        ; 30 LEs               ; 10 LEs                 ; No         ; |top|cpu:my_cpu|Mux25                    ;
+; 19:1               ; 7 bits    ; 84 LEs        ; 70 LEs               ; 14 LEs                 ; No         ; |top|cpu:my_cpu|alu:alu_inst|R[20]       ;
+; 18:1               ; 8 bits    ; 96 LEs        ; 80 LEs               ; 16 LEs                 ; No         ; |top|cpu:my_cpu|alu:alu_inst|R[8]        ;
+; 20:1               ; 4 bits    ; 52 LEs        ; 48 LEs               ; 4 LEs                  ; No         ; |top|cpu:my_cpu|alu:alu_inst|R[24]       ;
+; 19:1               ; 4 bits    ; 48 LEs        ; 44 LEs               ; 4 LEs                  ; No         ; |top|cpu:my_cpu|alu:alu_inst|R[5]        ;
+; 21:1               ; 2 bits    ; 28 LEs        ; 24 LEs               ; 4 LEs                  ; No         ; |top|cpu:my_cpu|alu:alu_inst|R[28]       ;
+; 20:1               ; 2 bits    ; 26 LEs        ; 24 LEs               ; 2 LEs                  ; No         ; |top|cpu:my_cpu|alu:alu_inst|R[3]        ;
++--------------------+-----------+---------------+----------------------+------------------------+------------+------------------------------------------+
 
 
 +--------------------------------------------------------------------------------------------------+
 ; Source assignments for cpu:my_cpu|regfile:rf|altsyncram:mem_rtl_0|altsyncram_mcc1:auto_generated ;
++---------------------------------+--------------------+------+------------------------------------+
+; Assignment                      ; Value              ; From ; To                                 ;
++---------------------------------+--------------------+------+------------------------------------+
+; OPTIMIZE_POWER_DURING_SYNTHESIS ; NORMAL_COMPILATION ; -    ; -                                  ;
++---------------------------------+--------------------+------+------------------------------------+
+
+
++--------------------------------------------------------------------------------------------------+
+; Source assignments for cpu:my_cpu|regfile:rf|altsyncram:mem_rtl_1|altsyncram_mcc1:auto_generated ;
 +---------------------------------+--------------------+------+------------------------------------+
 ; Assignment                      ; Value              ; From ; To                                 ;
 +---------------------------------+--------------------+------+------------------------------------+
@@ -429,13 +523,85 @@ Note: For table entries with two numbers listed, the numbers in parentheses indi
 Note: In order to hide this table in the UI and the text report file, please set the "Show Parameter Settings in Synthesis Report" option in "Analysis and Synthesis Settings -> More Settings" to "Off".
 
 
++---------------------------------------------------------------------------------------------+
+; Parameter Settings for Inferred Entity Instance: cpu:my_cpu|regfile:rf|altsyncram:mem_rtl_1 ;
++------------------------------------+----------------------+---------------------------------+
+; Parameter Name                     ; Value                ; Type                            ;
++------------------------------------+----------------------+---------------------------------+
+; BYTE_SIZE_BLOCK                    ; 8                    ; Untyped                         ;
+; AUTO_CARRY_CHAINS                  ; ON                   ; AUTO_CARRY                      ;
+; IGNORE_CARRY_BUFFERS               ; OFF                  ; IGNORE_CARRY                    ;
+; AUTO_CASCADE_CHAINS                ; ON                   ; AUTO_CASCADE                    ;
+; IGNORE_CASCADE_BUFFERS             ; OFF                  ; IGNORE_CASCADE                  ;
+; WIDTH_BYTEENA                      ; 1                    ; Untyped                         ;
+; OPERATION_MODE                     ; DUAL_PORT            ; Untyped                         ;
+; WIDTH_A                            ; 32                   ; Untyped                         ;
+; WIDTHAD_A                          ; 5                    ; Untyped                         ;
+; NUMWORDS_A                         ; 32                   ; Untyped                         ;
+; OUTDATA_REG_A                      ; UNREGISTERED         ; Untyped                         ;
+; ADDRESS_ACLR_A                     ; NONE                 ; Untyped                         ;
+; OUTDATA_ACLR_A                     ; NONE                 ; Untyped                         ;
+; WRCONTROL_ACLR_A                   ; NONE                 ; Untyped                         ;
+; INDATA_ACLR_A                      ; NONE                 ; Untyped                         ;
+; BYTEENA_ACLR_A                     ; NONE                 ; Untyped                         ;
+; WIDTH_B                            ; 32                   ; Untyped                         ;
+; WIDTHAD_B                          ; 5                    ; Untyped                         ;
+; NUMWORDS_B                         ; 32                   ; Untyped                         ;
+; INDATA_REG_B                       ; CLOCK1               ; Untyped                         ;
+; WRCONTROL_WRADDRESS_REG_B          ; CLOCK1               ; Untyped                         ;
+; RDCONTROL_REG_B                    ; CLOCK1               ; Untyped                         ;
+; ADDRESS_REG_B                      ; CLOCK0               ; Untyped                         ;
+; OUTDATA_REG_B                      ; UNREGISTERED         ; Untyped                         ;
+; BYTEENA_REG_B                      ; CLOCK1               ; Untyped                         ;
+; INDATA_ACLR_B                      ; NONE                 ; Untyped                         ;
+; WRCONTROL_ACLR_B                   ; NONE                 ; Untyped                         ;
+; ADDRESS_ACLR_B                     ; NONE                 ; Untyped                         ;
+; OUTDATA_ACLR_B                     ; NONE                 ; Untyped                         ;
+; RDCONTROL_ACLR_B                   ; NONE                 ; Untyped                         ;
+; BYTEENA_ACLR_B                     ; NONE                 ; Untyped                         ;
+; WIDTH_BYTEENA_A                    ; 1                    ; Untyped                         ;
+; WIDTH_BYTEENA_B                    ; 1                    ; Untyped                         ;
+; RAM_BLOCK_TYPE                     ; AUTO                 ; Untyped                         ;
+; BYTE_SIZE                          ; 8                    ; Untyped                         ;
+; READ_DURING_WRITE_MODE_MIXED_PORTS ; DONT_CARE            ; Untyped                         ;
+; READ_DURING_WRITE_MODE_PORT_A      ; NEW_DATA_NO_NBE_READ ; Untyped                         ;
+; READ_DURING_WRITE_MODE_PORT_B      ; NEW_DATA_NO_NBE_READ ; Untyped                         ;
+; INIT_FILE                          ; UNUSED               ; Untyped                         ;
+; INIT_FILE_LAYOUT                   ; PORT_A               ; Untyped                         ;
+; MAXIMUM_DEPTH                      ; 0                    ; Untyped                         ;
+; CLOCK_ENABLE_INPUT_A               ; NORMAL               ; Untyped                         ;
+; CLOCK_ENABLE_INPUT_B               ; NORMAL               ; Untyped                         ;
+; CLOCK_ENABLE_OUTPUT_A              ; NORMAL               ; Untyped                         ;
+; CLOCK_ENABLE_OUTPUT_B              ; NORMAL               ; Untyped                         ;
+; CLOCK_ENABLE_CORE_A                ; USE_INPUT_CLKEN      ; Untyped                         ;
+; CLOCK_ENABLE_CORE_B                ; USE_INPUT_CLKEN      ; Untyped                         ;
+; ENABLE_ECC                         ; FALSE                ; Untyped                         ;
+; ECC_PIPELINE_STAGE_ENABLED         ; FALSE                ; Untyped                         ;
+; WIDTH_ECCSTATUS                    ; 3                    ; Untyped                         ;
+; DEVICE_FAMILY                      ; Cyclone IV E         ; Untyped                         ;
+; CBXI_PARAMETER                     ; altsyncram_mcc1      ; Untyped                         ;
++------------------------------------+----------------------+---------------------------------+
+Note: In order to hide this table in the UI and the text report file, please set the "Show Parameter Settings in Synthesis Report" option in "Analysis and Synthesis Settings -> More Settings" to "Off".
+
+
 +----------------------------------------------------------------------------------------+
 ; altsyncram Parameter Settings by Entity Instance                                       ;
 +-------------------------------------------+--------------------------------------------+
 ; Name                                      ; Value                                      ;
 +-------------------------------------------+--------------------------------------------+
-; Number of entity instances                ; 1                                          ;
+; Number of entity instances                ; 2                                          ;
 ; Entity Instance                           ; cpu:my_cpu|regfile:rf|altsyncram:mem_rtl_0 ;
+;     -- OPERATION_MODE                     ; DUAL_PORT                                  ;
+;     -- WIDTH_A                            ; 32                                         ;
+;     -- NUMWORDS_A                         ; 32                                         ;
+;     -- OUTDATA_REG_A                      ; UNREGISTERED                               ;
+;     -- WIDTH_B                            ; 32                                         ;
+;     -- NUMWORDS_B                         ; 32                                         ;
+;     -- ADDRESS_REG_B                      ; CLOCK0                                     ;
+;     -- OUTDATA_REG_B                      ; UNREGISTERED                               ;
+;     -- RAM_BLOCK_TYPE                     ; AUTO                                       ;
+;     -- READ_DURING_WRITE_MODE_MIXED_PORTS ; DONT_CARE                                  ;
+; Entity Instance                           ; cpu:my_cpu|regfile:rf|altsyncram:mem_rtl_1 ;
 ;     -- OPERATION_MODE                     ; DUAL_PORT                                  ;
 ;     -- WIDTH_A                            ; 32                                         ;
 ;     -- NUMWORDS_A                         ; 32                                         ;
@@ -449,14 +615,13 @@ Note: In order to hide this table in the UI and the text report file, please set
 +-------------------------------------------+--------------------------------------------+
 
 
-+----------------------------------------------------------------------------------------------------------------+
-; Port Connectivity Checks: "cpu:my_cpu|alu:alu_inst"                                                            ;
-+------+--------+----------+-------------------------------------------------------------------------------------+
-; Port ; Type   ; Severity ; Details                                                                             ;
-+------+--------+----------+-------------------------------------------------------------------------------------+
-; R    ; Output ; Info     ; Connected to dangling logic. Logic that only feeds a dangling port will be removed. ;
-; zero ; Output ; Info     ; Connected to dangling logic. Logic that only feeds a dangling port will be removed. ;
-+------+--------+----------+-------------------------------------------------------------------------------------+
++---------------------------------------------------+
+; Port Connectivity Checks: "cpu:my_cpu"            ;
++-----------------+-------+----------+--------------+
+; Port            ; Type  ; Severity ; Details      ;
++-----------------+-------+----------+--------------+
+; gpio_in[31..18] ; Input ; Info     ; Stuck at GND ;
++-----------------+-------+----------+--------------+
 
 
 +-----------------------------------------------------+
@@ -465,24 +630,24 @@ Note: In order to hide this table in the UI and the text report file, please set
 ; Type                  ; Count                       ;
 +-----------------------+-----------------------------+
 ; boundary_port         ; 108                         ;
-; cycloneiii_ff         ; 79                          ;
-;     ENA               ; 14                          ;
-;     ENA SCLR SLD      ; 18                          ;
-;     SCLR              ; 13                          ;
-;     plain             ; 34                          ;
-; cycloneiii_lcell_comb ; 149                         ;
-;     arith             ; 9                           ;
-;         2 data inputs ; 9                           ;
-;     normal            ; 140                         ;
+; cycloneiii_ff         ; 224                         ;
+;     ENA               ; 32                          ;
+;     SCLR              ; 40                          ;
+;     plain             ; 152                         ;
+; cycloneiii_lcell_comb ; 610                         ;
+;     arith             ; 148                         ;
+;         2 data inputs ; 61                          ;
+;         3 data inputs ; 87                          ;
+;     normal            ; 462                         ;
 ;         0 data inputs ; 1                           ;
-;         1 data inputs ; 9                           ;
-;         2 data inputs ; 4                           ;
-;         3 data inputs ; 40                          ;
-;         4 data inputs ; 86                          ;
-; cycloneiii_ram_block  ; 32                          ;
+;         1 data inputs ; 10                          ;
+;         2 data inputs ; 46                          ;
+;         3 data inputs ; 51                          ;
+;         4 data inputs ; 354                         ;
+; cycloneiii_ram_block  ; 64                          ;
 ;                       ;                             ;
-; Max LUT depth         ; 3.00                        ;
-; Average LUT depth     ; 1.73                        ;
+; Max LUT depth         ; 16.50                       ;
+; Average LUT depth     ; 8.62                        ;
 +-----------------------+-----------------------------+
 
 
@@ -491,7 +656,7 @@ Note: In order to hide this table in the UI and the text report file, please set
 +----------------+--------------+
 ; Partition Name ; Elapsed Time ;
 +----------------+--------------+
-; Top            ; 00:00:00     ;
+; Top            ; 00:00:01     ;
 +----------------+--------------+
 
 
@@ -501,48 +666,56 @@ Note: In order to hide this table in the UI and the text report file, please set
 Info: *******************************************************************
 Info: Running Quartus Prime Analysis & Synthesis
     Info: Version 18.1.0 Build 625 09/12/2018 SJ Standard Edition
-    Info: Processing started: Fri Oct 17 18:05:54 2025
+    Info: Processing started: Mon Nov 24 18:05:23 2025
 Info: Command: quartus_map --read_settings_files=on --write_settings_files=off DE2_115 -c DE2_115
 Warning (18236): Number of processors has not been specified which may cause overloading on shared machines.  Set the global assignment NUM_PARALLEL_PROCESSORS in your QSF to an appropriate value for best performance.
 Info (20030): Parallel compilation is enabled and will use 8 of the 8 processors detected
 Info (12021): Found 1 design units, including 1 entities, in source file top.sv
-    Info (12023): Found entity 1: top File: /acct/mcs46/Downloads/lab_riu/top.sv Line: 7
+    Info (12023): Found entity 1: top File: /acct/mcs46/Downloads/lab_riu/top.sv Line: 5
 Info (12021): Found 1 design units, including 1 entities, in source file hexdriver.sv
     Info (12023): Found entity 1: hexdriver File: /acct/mcs46/Downloads/lab_riu/hexdriver.sv Line: 1
 Info (12127): Elaborating entity "top" for the top level hierarchy
-Warning (10858): Verilog HDL warning at top.sv(45): object ledclk used but never assigned File: /acct/mcs46/Downloads/lab_riu/top.sv Line: 45
-Warning (10230): Verilog HDL assignment warning at top.sv(83): truncated value with size 26 to match size of target (24) File: /acct/mcs46/Downloads/lab_riu/top.sv Line: 83
-Warning (10230): Verilog HDL assignment warning at top.sv(94): truncated value with size 32 to match size of target (24) File: /acct/mcs46/Downloads/lab_riu/top.sv Line: 94
-Warning (10034): Output port "LEDG" at top.sv(15) has no driver File: /acct/mcs46/Downloads/lab_riu/top.sv Line: 15
-Warning (10034): Output port "LEDR" at top.sv(16) has no driver File: /acct/mcs46/Downloads/lab_riu/top.sv Line: 16
-Info (12128): Elaborating entity "hexdriver" for hierarchy "hexdriver:hex" File: /acct/mcs46/Downloads/lab_riu/top.sv Line: 59
+Info (12128): Elaborating entity "hexdriver" for hierarchy "hexdriver:hex0" File: /acct/mcs46/Downloads/lab_riu/top.sv Line: 44
 Warning (12125): Using design file cpu.sv, which is not specified as a design file for the current project, but contains definitions for 1 design units and 1 entities in project
-    Info (12023): Found entity 1: cpu File: /acct/mcs46/Downloads/lab_riu/cpu.sv Line: 3
-Info (12128): Elaborating entity "cpu" for hierarchy "cpu:my_cpu" File: /acct/mcs46/Downloads/lab_riu/top.sv Line: 74
-Warning (10850): Verilog HDL warning at cpu.sv(64): number of words (4) in memory file does not match the number of elements in the address range [0:4095] File: /acct/mcs46/Downloads/lab_riu/cpu.sv Line: 64
-Warning (10030): Net "instruction_mem.data_a" at cpu.sv(61) has no driver or initial value, using a default initial value '0' File: /acct/mcs46/Downloads/lab_riu/cpu.sv Line: 61
-Warning (10030): Net "instruction_mem.waddr_a" at cpu.sv(61) has no driver or initial value, using a default initial value '0' File: /acct/mcs46/Downloads/lab_riu/cpu.sv Line: 61
-Warning (10030): Net "instruction_mem.we_a" at cpu.sv(61) has no driver or initial value, using a default initial value '0' File: /acct/mcs46/Downloads/lab_riu/cpu.sv Line: 61
+    Info (12023): Found entity 1: cpu File: /acct/mcs46/Downloads/lab_riu/cpu.sv Line: 1
+Info (12128): Elaborating entity "cpu" for hierarchy "cpu:my_cpu" File: /acct/mcs46/Downloads/lab_riu/top.sv Line: 59
+Warning (10850): Verilog HDL warning at cpu.sv(64): number of words (3) in memory file does not match the number of elements in the address range [0:4095] File: /acct/mcs46/Downloads/lab_riu/cpu.sv Line: 64
+Warning (10030): Net "instruction_mem.data_a" at cpu.sv(53) has no driver or initial value, using a default initial value '0' File: /acct/mcs46/Downloads/lab_riu/cpu.sv Line: 53
+Warning (10030): Net "instruction_mem.waddr_a" at cpu.sv(53) has no driver or initial value, using a default initial value '0' File: /acct/mcs46/Downloads/lab_riu/cpu.sv Line: 53
+Warning (10030): Net "instruction_mem.we_a" at cpu.sv(53) has no driver or initial value, using a default initial value '0' File: /acct/mcs46/Downloads/lab_riu/cpu.sv Line: 53
 Warning (12125): Using design file riscv_32_instr_decoder.sv, which is not specified as a design file for the current project, but contains definitions for 1 design units and 1 entities in project
     Info (12023): Found entity 1: riscv_32_instr_decoder File: /acct/mcs46/Downloads/lab_riu/riscv_32_instr_decoder.sv Line: 7
-Info (12128): Elaborating entity "riscv_32_instr_decoder" for hierarchy "cpu:my_cpu|riscv_32_instr_decoder:decode" File: /acct/mcs46/Downloads/lab_riu/cpu.sv Line: 90
+Info (12128): Elaborating entity "riscv_32_instr_decoder" for hierarchy "cpu:my_cpu|riscv_32_instr_decoder:decode" File: /acct/mcs46/Downloads/lab_riu/cpu.sv Line: 92
 Warning (12125): Using design file ctrl_unit.sv, which is not specified as a design file for the current project, but contains definitions for 1 design units and 1 entities in project
-    Info (12023): Found entity 1: ctrl_unit File: /acct/mcs46/Downloads/lab_riu/ctrl_unit.sv Line: 11
-Info (12128): Elaborating entity "ctrl_unit" for hierarchy "cpu:my_cpu|ctrl_unit:ctrl" File: /acct/mcs46/Downloads/lab_riu/cpu.sv Line: 106
+    Info (12023): Found entity 1: ctrl_unit File: /acct/mcs46/Downloads/lab_riu/ctrl_unit.sv Line: 7
+Info (12128): Elaborating entity "ctrl_unit" for hierarchy "cpu:my_cpu|ctrl_unit:ctrl" File: /acct/mcs46/Downloads/lab_riu/cpu.sv Line: 108
 Warning (12125): Using design file regfile.sv, which is not specified as a design file for the current project, but contains definitions for 1 design units and 1 entities in project
     Info (12023): Found entity 1: regfile File: /acct/mcs46/Downloads/lab_riu/regfile.sv Line: 3
-Info (12128): Elaborating entity "regfile" for hierarchy "cpu:my_cpu|regfile:rf" File: /acct/mcs46/Downloads/lab_riu/cpu.sv Line: 117
-Warning (10175): Verilog HDL warning at regfile.sv(27): ignoring unsupported system task File: /acct/mcs46/Downloads/lab_riu/regfile.sv Line: 27
-Warning (10175): Verilog HDL warning at regfile.sv(28): ignoring unsupported system task File: /acct/mcs46/Downloads/lab_riu/regfile.sv Line: 28
-Warning (10175): Verilog HDL warning at regfile.sv(29): ignoring unsupported system task File: /acct/mcs46/Downloads/lab_riu/regfile.sv Line: 29
+Info (12128): Elaborating entity "regfile" for hierarchy "cpu:my_cpu|regfile:rf" File: /acct/mcs46/Downloads/lab_riu/cpu.sv Line: 178
 Warning (12125): Using design file alu.sv, which is not specified as a design file for the current project, but contains definitions for 1 design units and 1 entities in project
-    Info (12023): Found entity 1: alu File: /acct/mcs46/Downloads/lab_riu/alu.sv Line: 7
-Info (12128): Elaborating entity "alu" for hierarchy "cpu:my_cpu|alu:alu_inst" File: /acct/mcs46/Downloads/lab_riu/cpu.sv Line: 125
-Warning (10036): Verilog HDL or VHDL warning at alu.sv(15): object "mullu" assigned a value but never read File: /acct/mcs46/Downloads/lab_riu/alu.sv Line: 15
+    Info (12023): Found entity 1: alu File: /acct/mcs46/Downloads/lab_riu/alu.sv Line: 6
+Info (12128): Elaborating entity "alu" for hierarchy "cpu:my_cpu|alu:alu_inst" File: /acct/mcs46/Downloads/lab_riu/cpu.sv Line: 187
+Warning (10036): Verilog HDL or VHDL warning at alu.sv(14): object "mullu" assigned a value but never read File: /acct/mcs46/Downloads/lab_riu/alu.sv Line: 14
 Warning (276020): Inferred RAM node "cpu:my_cpu|regfile:rf|mem_rtl_0" from synchronous design logic.  Pass-through logic has been added to match the read-during-write behavior of the original design.
+Warning (276020): Inferred RAM node "cpu:my_cpu|regfile:rf|mem_rtl_1" from synchronous design logic.  Pass-through logic has been added to match the read-during-write behavior of the original design.
 Warning (127007): Memory Initialization File or Hexadecimal (Intel-Format) File "/acct/mcs46/Downloads/lab_riu/db/DE2_115.ram0_cpu_1987c.hdl.mif" contains "don't care" values -- overwriting them with 0s
-Info (19000): Inferred 1 megafunctions from design logic
+Info (19000): Inferred 2 megafunctions from design logic
     Info (276029): Inferred altsyncram megafunction from the following design logic: "cpu:my_cpu|regfile:rf|mem_rtl_0" 
+        Info (286033): Parameter OPERATION_MODE set to DUAL_PORT
+        Info (286033): Parameter WIDTH_A set to 32
+        Info (286033): Parameter WIDTHAD_A set to 5
+        Info (286033): Parameter NUMWORDS_A set to 32
+        Info (286033): Parameter WIDTH_B set to 32
+        Info (286033): Parameter WIDTHAD_B set to 5
+        Info (286033): Parameter NUMWORDS_B set to 32
+        Info (286033): Parameter ADDRESS_ACLR_A set to NONE
+        Info (286033): Parameter OUTDATA_REG_B set to UNREGISTERED
+        Info (286033): Parameter ADDRESS_ACLR_B set to NONE
+        Info (286033): Parameter OUTDATA_ACLR_B set to NONE
+        Info (286033): Parameter ADDRESS_REG_B set to CLOCK0
+        Info (286033): Parameter INDATA_ACLR_A set to NONE
+        Info (286033): Parameter WRCONTROL_ACLR_A set to NONE
+    Info (276029): Inferred altsyncram megafunction from the following design logic: "cpu:my_cpu|regfile:rf|mem_rtl_1" 
         Info (286033): Parameter OPERATION_MODE set to DUAL_PORT
         Info (286033): Parameter WIDTH_A set to 32
         Info (286033): Parameter WIDTHAD_A set to 5
@@ -575,55 +748,70 @@ Info (12133): Instantiated megafunction "cpu:my_cpu|regfile:rf|altsyncram:mem_rt
     Info (12134): Parameter "WRCONTROL_ACLR_A" = "NONE"
 Info (12021): Found 1 design units, including 1 entities, in source file db/altsyncram_mcc1.tdf
     Info (12023): Found entity 1: altsyncram_mcc1 File: /acct/mcs46/Downloads/lab_riu/db/altsyncram_mcc1.tdf Line: 27
+Info (12130): Elaborated megafunction instantiation "cpu:my_cpu|regfile:rf|altsyncram:mem_rtl_1"
+Info (12133): Instantiated megafunction "cpu:my_cpu|regfile:rf|altsyncram:mem_rtl_1" with the following parameter:
+    Info (12134): Parameter "OPERATION_MODE" = "DUAL_PORT"
+    Info (12134): Parameter "WIDTH_A" = "32"
+    Info (12134): Parameter "WIDTHAD_A" = "5"
+    Info (12134): Parameter "NUMWORDS_A" = "32"
+    Info (12134): Parameter "WIDTH_B" = "32"
+    Info (12134): Parameter "WIDTHAD_B" = "5"
+    Info (12134): Parameter "NUMWORDS_B" = "32"
+    Info (12134): Parameter "ADDRESS_ACLR_A" = "NONE"
+    Info (12134): Parameter "OUTDATA_REG_B" = "UNREGISTERED"
+    Info (12134): Parameter "ADDRESS_ACLR_B" = "NONE"
+    Info (12134): Parameter "OUTDATA_ACLR_B" = "NONE"
+    Info (12134): Parameter "ADDRESS_REG_B" = "CLOCK0"
+    Info (12134): Parameter "INDATA_ACLR_A" = "NONE"
+    Info (12134): Parameter "WRCONTROL_ACLR_A" = "NONE"
 Warning (13024): Output pins are stuck at VCC or GND
-    Warning (13410): Pin "LEDG[0]" is stuck at GND File: /acct/mcs46/Downloads/lab_riu/top.sv Line: 15
-    Warning (13410): Pin "LEDG[1]" is stuck at GND File: /acct/mcs46/Downloads/lab_riu/top.sv Line: 15
-    Warning (13410): Pin "LEDG[2]" is stuck at GND File: /acct/mcs46/Downloads/lab_riu/top.sv Line: 15
-    Warning (13410): Pin "LEDG[3]" is stuck at GND File: /acct/mcs46/Downloads/lab_riu/top.sv Line: 15
-    Warning (13410): Pin "LEDG[4]" is stuck at GND File: /acct/mcs46/Downloads/lab_riu/top.sv Line: 15
-    Warning (13410): Pin "LEDG[5]" is stuck at GND File: /acct/mcs46/Downloads/lab_riu/top.sv Line: 15
-    Warning (13410): Pin "LEDG[6]" is stuck at GND File: /acct/mcs46/Downloads/lab_riu/top.sv Line: 15
-    Warning (13410): Pin "LEDG[7]" is stuck at GND File: /acct/mcs46/Downloads/lab_riu/top.sv Line: 15
-    Warning (13410): Pin "LEDG[8]" is stuck at GND File: /acct/mcs46/Downloads/lab_riu/top.sv Line: 15
-    Warning (13410): Pin "LEDR[0]" is stuck at GND File: /acct/mcs46/Downloads/lab_riu/top.sv Line: 16
-    Warning (13410): Pin "LEDR[1]" is stuck at GND File: /acct/mcs46/Downloads/lab_riu/top.sv Line: 16
-    Warning (13410): Pin "LEDR[2]" is stuck at GND File: /acct/mcs46/Downloads/lab_riu/top.sv Line: 16
-    Warning (13410): Pin "LEDR[3]" is stuck at GND File: /acct/mcs46/Downloads/lab_riu/top.sv Line: 16
-    Warning (13410): Pin "LEDR[4]" is stuck at GND File: /acct/mcs46/Downloads/lab_riu/top.sv Line: 16
-    Warning (13410): Pin "LEDR[5]" is stuck at GND File: /acct/mcs46/Downloads/lab_riu/top.sv Line: 16
-    Warning (13410): Pin "LEDR[6]" is stuck at GND File: /acct/mcs46/Downloads/lab_riu/top.sv Line: 16
-    Warning (13410): Pin "LEDR[7]" is stuck at GND File: /acct/mcs46/Downloads/lab_riu/top.sv Line: 16
-    Warning (13410): Pin "LEDR[8]" is stuck at GND File: /acct/mcs46/Downloads/lab_riu/top.sv Line: 16
-    Warning (13410): Pin "LEDR[9]" is stuck at GND File: /acct/mcs46/Downloads/lab_riu/top.sv Line: 16
-    Warning (13410): Pin "LEDR[10]" is stuck at GND File: /acct/mcs46/Downloads/lab_riu/top.sv Line: 16
-    Warning (13410): Pin "LEDR[11]" is stuck at GND File: /acct/mcs46/Downloads/lab_riu/top.sv Line: 16
-    Warning (13410): Pin "LEDR[12]" is stuck at GND File: /acct/mcs46/Downloads/lab_riu/top.sv Line: 16
-    Warning (13410): Pin "LEDR[13]" is stuck at GND File: /acct/mcs46/Downloads/lab_riu/top.sv Line: 16
-    Warning (13410): Pin "LEDR[14]" is stuck at GND File: /acct/mcs46/Downloads/lab_riu/top.sv Line: 16
-    Warning (13410): Pin "LEDR[15]" is stuck at GND File: /acct/mcs46/Downloads/lab_riu/top.sv Line: 16
-    Warning (13410): Pin "LEDR[16]" is stuck at GND File: /acct/mcs46/Downloads/lab_riu/top.sv Line: 16
-    Warning (13410): Pin "LEDR[17]" is stuck at GND File: /acct/mcs46/Downloads/lab_riu/top.sv Line: 16
+    Warning (13410): Pin "LEDG[0]" is stuck at GND File: /acct/mcs46/Downloads/lab_riu/top.sv Line: 13
+    Warning (13410): Pin "LEDG[1]" is stuck at GND File: /acct/mcs46/Downloads/lab_riu/top.sv Line: 13
+    Warning (13410): Pin "LEDG[2]" is stuck at GND File: /acct/mcs46/Downloads/lab_riu/top.sv Line: 13
+    Warning (13410): Pin "LEDG[3]" is stuck at GND File: /acct/mcs46/Downloads/lab_riu/top.sv Line: 13
+    Warning (13410): Pin "LEDG[4]" is stuck at GND File: /acct/mcs46/Downloads/lab_riu/top.sv Line: 13
+    Warning (13410): Pin "LEDG[5]" is stuck at GND File: /acct/mcs46/Downloads/lab_riu/top.sv Line: 13
+    Warning (13410): Pin "LEDG[6]" is stuck at GND File: /acct/mcs46/Downloads/lab_riu/top.sv Line: 13
+    Warning (13410): Pin "LEDG[7]" is stuck at GND File: /acct/mcs46/Downloads/lab_riu/top.sv Line: 13
+    Warning (13410): Pin "LEDG[8]" is stuck at GND File: /acct/mcs46/Downloads/lab_riu/top.sv Line: 13
+    Warning (13410): Pin "LEDR[0]" is stuck at GND File: /acct/mcs46/Downloads/lab_riu/top.sv Line: 14
+    Warning (13410): Pin "LEDR[1]" is stuck at GND File: /acct/mcs46/Downloads/lab_riu/top.sv Line: 14
+    Warning (13410): Pin "LEDR[2]" is stuck at GND File: /acct/mcs46/Downloads/lab_riu/top.sv Line: 14
+    Warning (13410): Pin "LEDR[3]" is stuck at GND File: /acct/mcs46/Downloads/lab_riu/top.sv Line: 14
+    Warning (13410): Pin "LEDR[4]" is stuck at GND File: /acct/mcs46/Downloads/lab_riu/top.sv Line: 14
+    Warning (13410): Pin "LEDR[5]" is stuck at GND File: /acct/mcs46/Downloads/lab_riu/top.sv Line: 14
+    Warning (13410): Pin "LEDR[6]" is stuck at GND File: /acct/mcs46/Downloads/lab_riu/top.sv Line: 14
+    Warning (13410): Pin "LEDR[7]" is stuck at GND File: /acct/mcs46/Downloads/lab_riu/top.sv Line: 14
+    Warning (13410): Pin "LEDR[8]" is stuck at GND File: /acct/mcs46/Downloads/lab_riu/top.sv Line: 14
+    Warning (13410): Pin "LEDR[9]" is stuck at GND File: /acct/mcs46/Downloads/lab_riu/top.sv Line: 14
+    Warning (13410): Pin "LEDR[10]" is stuck at GND File: /acct/mcs46/Downloads/lab_riu/top.sv Line: 14
+    Warning (13410): Pin "LEDR[11]" is stuck at GND File: /acct/mcs46/Downloads/lab_riu/top.sv Line: 14
+    Warning (13410): Pin "LEDR[12]" is stuck at GND File: /acct/mcs46/Downloads/lab_riu/top.sv Line: 14
+    Warning (13410): Pin "LEDR[13]" is stuck at GND File: /acct/mcs46/Downloads/lab_riu/top.sv Line: 14
+    Warning (13410): Pin "LEDR[14]" is stuck at GND File: /acct/mcs46/Downloads/lab_riu/top.sv Line: 14
+    Warning (13410): Pin "LEDR[15]" is stuck at GND File: /acct/mcs46/Downloads/lab_riu/top.sv Line: 14
+    Warning (13410): Pin "LEDR[16]" is stuck at GND File: /acct/mcs46/Downloads/lab_riu/top.sv Line: 14
+    Warning (13410): Pin "LEDR[17]" is stuck at GND File: /acct/mcs46/Downloads/lab_riu/top.sv Line: 14
 Info (286030): Timing-Driven Synthesis is running
-Info (17049): 20 registers lost all their fanouts during netlist optimizations.
 Info (144001): Generated suppressed messages file /acct/mcs46/Downloads/lab_riu/DE2_115.map.smsg
 Info (16010): Generating hard_block partition "hard_block:auto_generated_inst"
     Info (16011): Adding 0 node(s), including 0 DDIO, 0 PLL, 0 transceiver and 0 LCELL
 Warning (21074): Design contains 5 input pin(s) that do not drive logic
-    Warning (15610): No output dependent on input pin "CLOCK2_50" File: /acct/mcs46/Downloads/lab_riu/top.sv Line: 11
-    Warning (15610): No output dependent on input pin "CLOCK3_50" File: /acct/mcs46/Downloads/lab_riu/top.sv Line: 12
-    Warning (15610): No output dependent on input pin "KEY[1]" File: /acct/mcs46/Downloads/lab_riu/top.sv Line: 19
-    Warning (15610): No output dependent on input pin "KEY[2]" File: /acct/mcs46/Downloads/lab_riu/top.sv Line: 19
-    Warning (15610): No output dependent on input pin "KEY[3]" File: /acct/mcs46/Downloads/lab_riu/top.sv Line: 19
-Info (21057): Implemented 312 device resources after synthesis - the final resource count might be different
+    Warning (15610): No output dependent on input pin "CLOCK2_50" File: /acct/mcs46/Downloads/lab_riu/top.sv Line: 9
+    Warning (15610): No output dependent on input pin "CLOCK3_50" File: /acct/mcs46/Downloads/lab_riu/top.sv Line: 10
+    Warning (15610): No output dependent on input pin "KEY[1]" File: /acct/mcs46/Downloads/lab_riu/top.sv Line: 17
+    Warning (15610): No output dependent on input pin "KEY[2]" File: /acct/mcs46/Downloads/lab_riu/top.sv Line: 17
+    Warning (15610): No output dependent on input pin "KEY[3]" File: /acct/mcs46/Downloads/lab_riu/top.sv Line: 17
+Info (21057): Implemented 894 device resources after synthesis - the final resource count might be different
     Info (21058): Implemented 25 input pins
     Info (21059): Implemented 83 output pins
-    Info (21061): Implemented 172 logic cells
-    Info (21064): Implemented 32 RAM segments
-Info: Quartus Prime Analysis & Synthesis was successful. 0 errors, 55 warnings
-    Info: Peak virtual memory: 1023 megabytes
-    Info: Processing ended: Fri Oct 17 18:06:02 2025
-    Info: Elapsed time: 00:00:08
-    Info: Total CPU time (on all processors): 00:00:16
+    Info (21061): Implemented 722 logic cells
+    Info (21064): Implemented 64 RAM segments
+Info: Quartus Prime Analysis & Synthesis was successful. 0 errors, 48 warnings
+    Info: Peak virtual memory: 1058 megabytes
+    Info: Processing ended: Mon Nov 24 18:05:33 2025
+    Info: Elapsed time: 00:00:10
+    Info: Total CPU time (on all processors): 00:00:17
 
 
 +------------------------------------------+
