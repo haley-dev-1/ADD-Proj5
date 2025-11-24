@@ -148,13 +148,13 @@ module ctrl_unit(
                 branch_taken = 1'b0;
 
                 if  (funct3 == 3'b000) // b
-                    aluop_EX = 4'b????;
+                    aluop_EX = 4'b1000;
                 else if  (funct3 == 3'b101) // bge
-                    aluop_EX = 4'b????;
+                    aluop_EX = 4'b1000;
                 else if  (funct3 == 3'b111) // bgeu
-                    aluop_EX = 4'b????;
+                    aluop_EX = 4'b1000;     // ??? original said 10000 its 4 bits but thats 5 bits? fix this
                 else if  (funct3 == 3'b100) // blt
-                    aluop_EX = 4'b????;
+                    aluop_EX = 4'b1000;
                 else if  (funct3 == 3'b110) // bltu
                     aluop_EX = 4'b????~;
 
