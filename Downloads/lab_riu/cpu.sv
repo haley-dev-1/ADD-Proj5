@@ -32,6 +32,7 @@ module cpu(
     logic [2:0] funct3;
     logic [6:0] funct7;
     logic [4:0] rs1, rs2, rd;
+    logic [11:0] imm12;
     
     //control signals
     logic [1:0] alusrc_EX;
@@ -117,8 +118,8 @@ module cpu(
     // select next pc based on contrl from ctrl unit
     always_comb begin
         case (pcsrc_ctrl_EX)
-            2'b00: pc_next_F = pc_F + 32'd4;       // normal
-            2'b01: pc_next_F = branch_target_EX;    // B-type
+            2'b00: pc_next_F = pc_F + 32'd4;      // normal
+            2'b01: pc_next_F = branch_target_EX;   // B-type
             2'b10: pc_next_F = jal_target_EX;       // JAL
             2'b11: pc_next_F = jalr_target_EX;      // JALR
             default: pc_next_F = pc_F + 32'd4;
@@ -142,7 +143,10 @@ module cpu(
             .imm_U  (imm_U),
             .imm_J  (imm_J) 
 
-            // rip, here lies the ghost of imm20 and imm12 from lab3.
+            .imm12(imm12)
+
+            // rip, here lies the ghost of imm20.
+            // we actually do need to keep imm12 if we want csrrw to work still.
     );
 
 
@@ -156,6 +160,7 @@ module cpu(
             .op(opcode),
             .funct3(funct3),
             .funct7(funct7),
+            .imm(imm12),
            
             /* outputs */
             .alusrc_EX(alusrc_EX),     
@@ -196,6 +201,7 @@ module cpu(
     end
  
     // implements the regsel_EX = 2'b11 as PC+4 for the j type in CPU
+    // writeback mux => picks whta goes into register file each cycle, this decision for the bus is based off the argument to regsel_EX
     always_comb begin 
         case (regsel_EX)
             2'b00: writedata = 32'b0;         // default
