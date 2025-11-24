@@ -38,7 +38,7 @@ module cpu(
     logic [1:0] alusrc_EX;
     logic GPIO_we; 
     logic regwrite_EX;
-    logic [1:0] regsel_EX;
+    logic [2:0] regsel_EX;
     logic [3:0] aluop_EX;
     
     //register file signals 
@@ -204,10 +204,10 @@ module cpu(
     // writeback mux => picks whta goes into register file each cycle, this decision for the bus is based off the argument to regsel_EX
     always_comb begin 
         case (regsel_EX)
-            2'b00: writedata = 32'b0;         // default
-            2'b01: writedata = imm_U;        // lui/aiupc
-            2'b10: writedata = alu_result;    // ALU result
-            2'b11: writedata = pc_EX + 32'd4;   // JAL/JALR return address <--- for jumps!
+            3'b000: writedata = 32'b0;         // default
+            3'b001: writedata = imm_U;        // lui/aiupc
+            3'b010: writedata = alu_result;    // ALU result
+            3'b011: writedata = pc_EX + 32'd4;   // JAL/JALR return address <--- for jumps!
         endcase
     end
 

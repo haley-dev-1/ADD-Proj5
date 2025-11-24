@@ -18,9 +18,9 @@ module ctrl_unit(
     output logic [1:0] alusrc_EX,
     output logic        GPIO_we,
     output logic        regwrite_EX,
-    output logic [1:0] regsel_EX,
+    output logic [2:0] regsel_EX,
     output logic [3:0] aluop_EX,
-    output logic [1:0] pcsrc_ctrl_EX, // 2 bits!  seq (00), 01 for branch, jal (10), jalr (11) 
+    output logic [1:0] pcsrc_ctrl_EX // 2 bits!  seq (00), 01 for branch, jal (10), jalr (11) 
 
 );
 
@@ -29,7 +29,7 @@ module ctrl_unit(
         regwrite_EX = 1'b0;
         alusrc_EX   = 2'b00;
         GPIO_we     = 1'b0;
-        regsel_EX   = 2'b00;
+        regsel_EX   = 3'b000;
         aluop_EX    = 4'b0000;
         pcsrc_ctrl_EX  = 2'b00; // defautl to sequential; 00 == seq
 
@@ -38,7 +38,7 @@ module ctrl_unit(
             7'b0110011: begin
                 regwrite_EX = 1'b1;
                 alusrc_EX   = 2'b00;
-                regsel_EX   = 2'b10;
+                regsel_EX   = 3'b010;
                 GPIO_we     = 1'b0; // no write
 
                 if (funct7 == 7'b0000000) begin
@@ -71,7 +71,7 @@ module ctrl_unit(
             7'b0010011: begin
                 regwrite_EX = 1'b1;
                 alusrc_EX   = 2'b01;
-                regsel_EX   = 2'b10;
+                regsel_EX   = 3'b010;
                 GPIO_we     = 1'b0;
 
                 if      (funct3 == 3'b000) aluop_EX = 4'b0011; // ADDI
@@ -89,7 +89,7 @@ module ctrl_unit(
                 // make sure these are correct
                 regwrite_EX = 1'b1;
                 alusrc_EX   = 2'b10;
-                regsel_EX   = 2'b10;
+                regsel_EX   = 3'b010;
                 
                 if  (funct3 == 3'b000) 
                     aluop = 4'b????; // JALR
@@ -105,7 +105,7 @@ module ctrl_unit(
                 regwrite_EX = 1'b1;     // We are indeed writing. address goes into rd.
 
                 GPIO_we = 1'b0;
-                regsel_EX = 2'b11;      // pertains to pc_4 for jal/jalr
+                regsel_EX = 3'b011;      // pertains to pc_4 for jal/jalr
 
                 // ---- KEY IDEA: WE DON'T USE THE ALU FOR JUMP INSTRUCTIONS... THEY DON'T OPERATE ON NOTHIN'! ---- //
                 alusrc_EX = 2'b00; //   // leave at 0 cuz we don't use the alu operand for jal instruction 
@@ -166,7 +166,7 @@ module ctrl_unit(
             7'b0110111: begin
                 regwrite_EX = 1'b1;
                 alusrc_EX   = 2'b10;
-                regsel_EX   = 2'b01;
+                regsel_EX   = 3'b001;
                 GPIO_we     = 1'b0;
                 aluop_EX    = 4'b0000;
             end
@@ -175,23 +175,23 @@ module ctrl_unit(
             7'b1110011: begin
                 regwrite_EX = 1'b0;
                 alusrc_EX   = 2'b00;
-                regsel_EX   = 2'b00;
+                regsel_EX   = 3'b000;
                 aluop_EX    = 4'b0000;
 
                 if (imm12 == 12'hF00) begin
                     GPIO_we     = 1'b0;
                     regwrite_EX = 1'b1;
-                    regsel_EX = 2'b11;
+                    regsel_EX = 3'b011;
                 end
                 else if (imm12 == 12'hF02) begin
                     GPIO_we     = 1'b1;
                     regwrite_EX = 1'b1;
-                    regsel_EX   = 2'b11;
+                    regsel_EX   = 3'b011;
                 end
                 else begin
                     GPIO_we = 1'b0;
                     regwrite_EX = 1'b0;
-                    regsel_EX = 2'b00;
+                    regsel_EX = 3'b000;
                 end
             end
 
@@ -200,7 +200,7 @@ module ctrl_unit(
                 regwrite_EX = 1'b0;
                 alusrc_EX   = 2'b00;
                 GPIO_we     = 1'b0;
-                regsel_EX   = 2'b00;
+                regsel_EX   = 3'b000;
                 aluop_EX    = 4'b0000;
             end
         endcase
