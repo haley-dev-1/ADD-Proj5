@@ -15,12 +15,21 @@ module ctrl_unit(
     input logic [11:0] imm12,   // immediate for CSR/GPIO instructions
     input logic [19:0] imm20,   // legacy
     
+    // info comes back from  the EX stage to decide branch/jalr
+    input logic alu_zero_EX, // beq, bne
+    input logic lt_signed_EX, // result of SLT (signed <)
+    input logic lt_unsigned_EX, // result of SLTU (unsigned <)
+
     output logic [1:0] alusrc_EX,
     output logic        GPIO_we,
     output logic        regwrite_EX,
     output logic [2:0] regsel_EX,
     output logic [3:0] aluop_EX,
     output logic [1:0] pcsrc_ctrl_EX // 2 bits!  seq (00), 01 for branch, jal (10), jalr (11) 
+
+    // for stalls
+    output logic stall_FETCH,
+    output logic stall_EX
 
 );
 
@@ -32,6 +41,9 @@ module ctrl_unit(
         regsel_EX   = 3'b000;
         aluop_EX    = 4'b0000;
         pcsrc_ctrl_EX  = 2'b00; // defautl to sequential; 00 == seq
+
+        stall_FETCH = 1'b0; // probably a smart idea to keep fall at "no" (0) on default 
+        stall_EX = 1'b0 // ''
 
         case(op)
             // -------------------- R TYPE --------------------
@@ -86,16 +98,21 @@ module ctrl_unit(
             // --------------------- JALR (I type) ----------------------- // 
             7'b1100111: begin
                 regwrite_EX = 1'b1;     // pc+$
+                
                 GPIO_we = 1'b0;
                 regsel_EX = 3'b010;
+                
                 alusrc_EX = 2'b10;
                 aluop_EX = 4'b0011;     // TODO double check, now its add.
+                
                 pcsrc_ctrl_EX = 2'b11;                
+
+                stall_FETCH = 1'b1; // turn on
+                stall_EX = 1'b1;
             end
             // ----------------------------------------------------------- //
 
             // ============================================== J ================================================ // 
-            
             // -------------------- JAL (J TYPE) ------------------------------------------------------------------ //
             7'b1101111: begin           // jal rd, offset: R[rd] = PC+4; PC <- PC + sext(offset) 
                 
@@ -110,30 +127,25 @@ module ctrl_unit(
                 // ------------------------------------------------------------------------------------------------ //
 
                 pcsrc_ctrl_EX = 2'b10;  // decoding is somewhere above. it tells us pcsrc_ctrl_EX settings are set  to 10 for JAL (J) type logic. 
+
+                // change to yes, insert for next cucle so instruction can't commit
+                stall_FETCH   = 1'b1;
+                stall_EX = 1'b1;
             end
-
-            // ********* TODO: CROSS CHECK WITH CPU.SV BECAUSE THIS IS WHAT IS EXPECTED. ********** //
-            // decoder
-                // always_comb begin
-                //  case (pcsrc_ctrl_EX)
-                //      2'b00: pc_next_F = pc_F + 32'd4;      // normal
-                //      2'b01: pc_next_F = branch_target_EX;  // b
-                //      2'b10: pc_next_F = jal_target_EX;     // JAL
-                //      2'b11: pc_next_F = jalr_target_EX;    // JALR
-                //  endcase
-                // end
-            // ***************************************************************************************
-
             // ================================================================================================= // 
 
-
-
-            // ---------------------- B ----------------------
+            // =========================================== B ==================================== //
             // B Type Instructions - "tHESE PREVENT THE cpu FROM EXECUTING THE NEXT INSTRUCTION IN THE PROGRAM, AND INSTEAD BEGIN A SEQ. OF INSTRUCTIONS IN ANOTHER MEMORY LOCAITON
             7'b1100011: begin
 
                 // defaults
-                // ...
+                regwrite_EX = 1'b0;
+                GPIO_we = 1'b0;
+                regsel_EX = 3'b000;
+                alusrc_EX = 2'b00; // compare rs1, rs2
+
+                logic branch_taken;
+                branch_taken = 1'b0;
 
                 if  (funct3 == 3'b000) // b
                     aluop_EX = 4'b????;

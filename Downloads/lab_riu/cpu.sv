@@ -40,6 +40,14 @@ module cpu(
     logic regwrite_EX;
     logic [2:0] regsel_EX;
     logic [3:0] aluop_EX;
+
+    // stall lines that come from control unit
+    logic stall_FETCH;
+    logic stall_EX;
+
+    // optional(?) for full B-type support
+    logic lt_signed_EX;
+    logic lt_unsigned_EX;
     
     //register file signals 
     logic [31:0] readdata1, readdata2; 
@@ -106,6 +114,12 @@ module cpu(
 
             // Update fetch PC for next cycle according to branch/jump logic
             pc_F <= pc_next_F;
+
+            end else begin  // "Freezing"
+                // stall FETCH by holding PC and ex-stage instruction
+                pc_F           <= pc_F;        // no change
+                pc_EX          <= pc_EX;       // keep the same instruction in EX
+                instruction_EX <= instruction_EX;
         end
     end
     // ========================================================================
@@ -161,7 +175,13 @@ module cpu(
             .funct3(funct3),
             .funct7(funct7),
             .imm(imm12),
-           
+            //.imm20(20'b0), // or remove if unused
+
+            // connects to ex stage for branch decisions
+            .alu_zero_EX (alu_zero),
+            .lt_signed_EX(lt_signed_EX),
+            .lt_unsigned_EX(lt_unsigned_EX),
+
             /* outputs */
             .alusrc_EX(alusrc_EX),     
             .GPIO_we(GPIO_we),
@@ -169,25 +189,30 @@ module cpu(
             .regsel_EX(regsel_EX),  // 1 or 2 bit? TODO
             .aluop_EX(aluop_EX),    // isn't that four bits*/
             .pcsrc_ctrl_EX(pcsrc_ctrl_EX)
+
+            // stalling 
+            .stall_FETCH(stall_FETCH),
+            .stall_EX(stall_EX)
     );
     
     regfile rf (
-    .clk(clk),
-    .we(regwrite_EX),
-    .readaddr1(rs1),
-    .readaddr2(rs2),
-    .writeaddr(rd),
-    .writedata(writedata),
-    .readdata1(readdata1),
-    .readdata2(readdata2)
+        .clk(clk),
+        .we(regwrite_EX & ~stall_EX),  // NEW: no write when EX is stalled
+        .we(regwrite_EX),
+        .readaddr1(rs1),
+        .readaddr2(rs2),
+        .writeaddr(rd),
+        .writedata(writedata),
+        .readdata1(readdata1),
+        .readdata2(readdata2)
     );
     
     alu alu_inst ( 
-    .A(alu_A),
-    .B(alu_B),
-    .op(aluop_EX),
-    .R(alu_result),
-    .zero(alu_zero)
+        .A(alu_A),
+        .B(alu_B),
+        .op(aluop_EX),
+        .R(alu_result),
+        .zero(alu_zero)
     );
     
     assign alu_A = readdata1;
@@ -221,7 +246,7 @@ module cpu(
    always_ff @(posedge clk) begin 
    	if (res) begin
    		gpio_out_reg <= 32'b0;
-   	end else if (GPIO_we) begin 
+   	end else if (GPIO_we & ~stall_EX) begin // for stalling, we don't write to GPIO ever.  
    		gpio_out_reg <= readdata1; // write rs1 to GPIO
    	end
    end 
