@@ -1,3 +1,13 @@
+/*
+    TODO:
+    ''''''''''
+    - Distinguish between different branch types (beq, bne, blt, …).
+    - Distinguish jal vs jalr vs specific branch instructions.
+    - Provide a suite of tests (the lab wants multiple test programs, 
+        and a methodology where breaking any one instruction causes your suite to fail).
+    - ...
+*/
+
 module simtop;
 
     logic clk;
@@ -41,8 +51,8 @@ module simtop;
     // ------------------------------------------------------------
 
     // -------- connect reset and gpio_out (outputs) to fsm -------
-    assign reset   = KEY[0];                // FSM uses active-low reset
-    assign gpio_out = dut.my_cpu.gpio_out_reg;  // tap the CPU's GPIO output register
+    assign reset    = KEY[0];                  // FSM uses active-low reset
+    assign gpio_out = dut.my_cpu.gpio_out_reg; // tap the CPU's GPIO output register
     // ------------------------------------------------------------
 
     // -------------- B / J / Etc Checker -----------------
@@ -51,21 +61,21 @@ module simtop;
     //  outputs[1] = 10 (instruction after branch, if NOT taken)
     //  outputs[2] = 15 (final "done", if branch IS taken)
     // -------------------------------------------------------------
-    
+
     // -------------------------- B /J / Branch ---------------------
     int outputs [3] = '{5,10,15};
 
     // the current state (for FSM tb.)
-        // 000 = waiting for pre-branch marker (5)
-        // 001 = cycle of the branch/jump instruction
-        // 010 = stall/flush cycle (should NOT see wrong-path output)
-        // 011 = final marker (15) after taking the branch/jump
+    // 000 = waiting for pre-branch marker (5)
+    // 001 = cycle of the branch/jump instruction
+    // 010 = stall/flush cycle (should NOT see wrong-path output)
+    // 011 = final marker (15) after taking the branch/jump
     logic [2:0] state; 
 
     // ============================== FINITE STATE MACHINE FOR SELF CHECKING TESTBENCH ==============================
     //  BELOW is the fsm logic that verifies branch (b) and jump (j) instructions for lab 4.
     //  It will notify if an unexpected thing happens, giving us an error message and stops simluation.
-    //  it runs every clock cycles and vlalidates the cpu is handling jumps and branches correctly. 
+    //  It runs every clock cycle and validates the CPU is handling jumps and branches correctly. 
     // ==============================================================================================================
     
     always_ff @(posedge clk, negedge reset) 
@@ -114,11 +124,77 @@ module simtop;
         end
     end
 
+
+    // ========================== JAL LINK-REGISTER CHECKER ==========================================
+    //  SUMMARY: WE ARE COMPLETING THE TEST BENCH SUITE
+    // 
+    //  jal rd, offset: R[rd] = PC+4; PC <- PC + sext(offset)
+    //
+    //  1. watch instruction in EX stage for opcode 1101111 (JAL).
+    //  2. When we see it, capture PC_EX + 4 as the *expected* link value.
+    //  3, Wait a couple of cycles for the writeback to occur.
+    //  4, Then compare R[link_reg] in the register file against that expected value.
+    //  5/ If it does NOT match, we print an error and finish the sim.
+    // ================================================================================================
+
+    localparam int JAL_LINK_REG = 1;  // x1 = ra, typical JAL target
+
+    logic        jal_pending;
+    logic [1:0]  jal_wait;
+    logic [31:0] jal_expected_ra;
+
+    always_ff @(posedge clk, negedge reset) begin
+        if (!reset) begin
+            jal_pending    <= 1'b0;
+            jal_wait       <= 2'd0;
+            jal_expected_ra <= 32'b0;
+        end else begin
+            // Detect JAL in EX stage: opcode 1101111 on instruction_EX[6:0]
+            if (dut.my_cpu.instruction_EX[6:0] == 7'b1101111 && !jal_pending) begin
+                jal_pending    <= 1'b1;
+                jal_wait       <= 2'd2;  // wait a couple cycles before checking
+                // expected return address is PC_EX + 4 (PC of JAL + 4)
+                jal_expected_ra <= dut.my_cpu.pc_EX + 32'd4;
+                $display("Detected JAL in EX: PC_EX = 0x%08h, expecting link 0x%08h in x%0d",
+                         dut.my_cpu.pc_EX, jal_expected_ra, JAL_LINK_REG);
+            end
+
+            // If we have a pending JAL check, count down and then verify RF contents
+            if (jal_pending && jal_wait != 2'd0) begin
+                jal_wait <= jal_wait - 2'd1;
+
+                // When jal_wait hits 1 -> on the *next* cycle it becomes 0, so
+                // we choose to check when jal_wait == 1, right before it drops to 0.
+                if (jal_wait == 2'd1) begin
+                    if (dut.my_cpu.rf.mem[JAL_LINK_REG] !== jal_expected_ra) begin
+                        $display("ERROR: JAL link register x%0d = 0x%08h, expected 0x%08h",
+                                 JAL_LINK_REG,
+                                 dut.my_cpu.rf.mem[JAL_LINK_REG],
+                                 jal_expected_ra);
+                        $finish;
+                    end else begin
+                        $display("JAL OK: x%0d = 0x%08h (matches PC+4)",
+                                 JAL_LINK_REG,
+                                 dut.my_cpu.rf.mem[JAL_LINK_REG]);
+                        // done with this JAL check; allow more JALs later if desired
+                        jal_pending <= 1'b0;
+                    end
+                end
+            end
+        end
+    end
+
+
     // ========================================= DRIVING THE SIMULATION ============================================
-    //  from lab 3 where we implemented r, i, and u, and self-checkign testbench
-    //  initializes switch and keys
-    //  prints summary of executions at end
-    //  summary: tests, drives reset, prints debug info, and manages overall simulation timeline
+    //  from lab 3 where we implemented r, i, and u, and self-checking testbench
+    //  - initializes switch and keys
+    //  - prints summary of executions at end
+    //  - summary: tests, drives reset, prints debug info, and manages overall simulation timeline
+    //  For this lab:
+    //    * The FSM above specifically checks the B-type "stall/flush" behavior via GPIO markers.
+    //    * The JAL checker above validates the J-type link-register semantics.
+    //    * You can create different instmem.dat programs (branch-taken, branch-not-taken, jal, jalr, etc.)
+    //      and re-run this same simtop to form your "suite" of tests.
     // ==============================================================================================================
     
     initial begin
@@ -143,7 +219,7 @@ module simtop;
         $display("PC= %h", dut.my_cpu.pc_F);
         $display("Instruction_EX = %h", dut.my_cpu.instruction_EX);
 
-        // 
+        // Periodic debug printout: PC, instruction, RF[5], GPIO, etc.
         repeat (60) begin
             #10; // wait one clock period (since clk toggles every 5)
             $display("%0t\tPC=%h\tINSTR=0x%08h\tRF[5]=0x%08h GPIO_in=0x%08h GPIO_out=0x%08h GPIO_we=%b",
@@ -157,7 +233,7 @@ module simtop;
         end
 
         // Simple final check print
-        $display("\n Final Ouput");
+        $display("\n Final Output");
         $display("GPIO Output  = 0x%08h (dec %0d)",
                  dut.my_cpu.gpio_out, dut.my_cpu.gpio_out);
 
