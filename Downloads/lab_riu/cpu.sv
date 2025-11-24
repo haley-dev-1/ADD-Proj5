@@ -207,7 +207,9 @@ module cpu(
             3'b000: writedata = 32'b0;         // default
             3'b001: writedata = imm_U;        // lui/aiupc
             3'b010: writedata = alu_result;    // ALU result
-            3'b011: writedata = pc_EX + 32'd4;   // JAL/JALR return address <--- for jumps!
+            3'b011: {14'b0, gpio_in};           // csrrw rd, i0, x0
+            3'b100: writedata = pc_EX + 32'd4;   // JAL / JALR link
+            default: writedata = 32'b0;
         endcase
     end
 

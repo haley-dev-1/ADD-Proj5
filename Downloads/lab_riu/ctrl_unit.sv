@@ -84,18 +84,15 @@ module ctrl_unit(
             end
 
             // --------------------- JALR (I type) ----------------------- // 
-            
             7'b1100111: begin
-                // make sure these are correct
-                regwrite_EX = 1'b1;
-                alusrc_EX   = 2'b10;
-                regsel_EX   = 3'b010;
-                
-                if  (funct3 == 3'b000) 
-                    aluop = 4'b????; // JALR
+                regwrite_EX = 1'b1;     // pc+$
+                GPIO_we = 1'b0;
+                regsel_EX = 3'b010;
+                alusrc_EX = 2'b10;
+                aluop_EX = 4'b0011;     // TODO double check, now its add.
+                pcsrc_ctrl_EX = 2'b11;                
             end
-
-
+            // ----------------------------------------------------------- //
 
             // ============================================== J ================================================ // 
             
@@ -105,7 +102,7 @@ module ctrl_unit(
                 regwrite_EX = 1'b1;     // We are indeed writing. address goes into rd.
 
                 GPIO_we = 1'b0;
-                regsel_EX = 3'b011;      // pertains to pc_4 for jal/jalr
+                regsel_EX = 3'b100;      // pertains to pc_4 for jal/jalr
 
                 // ---- KEY IDEA: WE DON'T USE THE ALU FOR JUMP INSTRUCTIONS... THEY DON'T OPERATE ON NOTHIN'! ---- //
                 alusrc_EX = 2'b00; //   // leave at 0 cuz we don't use the alu operand for jal instruction 
@@ -113,16 +110,6 @@ module ctrl_unit(
                 // ------------------------------------------------------------------------------------------------ //
 
                 pcsrc_ctrl_EX = 2'b10;  // decoding is somewhere above. it tells us pcsrc_ctrl_EX settings are set  to 10 for JAL (J) type logic. 
-
-
-                // ---------- PC INSTRUCTION IN EX + SIGN EXTENDED JUMP OFFSET FROM DECODER ----------------------- //
-                // jal_target_EX = pc_EX + imm_J;
-                // ------------------------------------------------------------------------------------------------ //
-                
-                // -------------------- JAL also (second main use) writes PC+4 to rd ------------------------------ //
-                // R[rd] = PC + 4
-                // ------------------------------------------------------------------------------------------------ //
-
             end
 
             // ********* TODO: CROSS CHECK WITH CPU.SV BECAUSE THIS IS WHAT IS EXPECTED. ********** //
@@ -176,7 +163,8 @@ module ctrl_unit(
                 regwrite_EX = 1'b0;
                 alusrc_EX   = 2'b00;
                 regsel_EX   = 3'b000;
-                aluop_EX    = 4'b0000;
+                aluop_EX   = 4'b0000;
+                GPIO_we = 1'b0;
 
                 if (imm12 == 12'hF00) begin
                     GPIO_we     = 1'b0;
