@@ -1,5 +1,5 @@
 Timing Analyzer report for DE2_115
-Wed Dec  3 18:46:43 2025
+Thu Dec  4 17:56:05 2025
 Quartus Prime Version 18.1.0 Build 625 09/12/2018 SJ Standard Edition
 
 
@@ -104,8 +104,8 @@ refer to the applicable agreement for further details.
 ;                            ;             ;
 ; Usage by Processor         ; % Time Used ;
 ;     Processor 1            ; 100.0%      ;
-;     Processor 2            ;  69.9%      ;
-;     Processor 3            ;  67.8%      ;
+;     Processor 2            ;  69.6%      ;
+;     Processor 3            ;  67.5%      ;
 ;     Processors 4-8         ;   0.7%      ;
 +----------------------------+-------------+
 
@@ -115,7 +115,7 @@ refer to the applicable agreement for further details.
 +---------------+--------+--------------------------+
 ; SDC File Path ; Status ; Read at                  ;
 +---------------+--------+--------------------------+
-; DE2_115.sdc   ; OK     ; Wed Dec  3 18:46:39 2025 ;
+; DE2_115.sdc   ; OK     ; Thu Dec  4 17:56:01 2025 ;
 +---------------+--------+--------------------------+
 
 
@@ -1506,7 +1506,7 @@ No non-DPA dedicated SERDES Receiver circuitry present in device or used in desi
 Info: *******************************************************************
 Info: Running Quartus Prime Timing Analyzer
     Info: Version 18.1.0 Build 625 09/12/2018 SJ Standard Edition
-    Info: Processing started: Wed Dec  3 18:46:38 2025
+    Info: Processing started: Thu Dec  4 17:55:59 2025
 Info: Command: quartus_sta DE2_115 -c DE2_115
 Info: qsta_default_script.tcl version: #1
 Warning (18236): Number of processors has not been specified which may cause overloading on shared machines.  Set the global assignment NUM_PARALLEL_PROCESSORS in your QSF to an appropriate value for best performance.
@@ -1579,9 +1579,9 @@ Info (332146): Worst-case minimum pulse width slack is 9.202
 Info (332102): Design is not fully constrained for setup requirements
 Info (332102): Design is not fully constrained for hold requirements
 Info: Quartus Prime Timing Analyzer was successful. 0 errors, 3 warnings
-    Info: Peak virtual memory: 1008 megabytes
-    Info: Processing ended: Wed Dec  3 18:46:43 2025
-    Info: Elapsed time: 00:00:05
+    Info: Peak virtual memory: 1002 megabytes
+    Info: Processing ended: Thu Dec  4 17:56:05 2025
+    Info: Elapsed time: 00:00:06
     Info: Total CPU time (on all processors): 00:00:05
 
 

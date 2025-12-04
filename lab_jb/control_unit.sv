@@ -107,25 +107,22 @@ module control_unit (
           endcase
         end
         
-        // ====================================================================
+
         // I-Type Load instructions (opcode 0000011)
-        // ====================================================================
         7'b0000011 : begin // LOAD (lb, lh, lw, lbu, lhu)
           regwrite = 1'b1;
           alusrc = 1'b1;   // Use immediate for address calculation
           aluop = 4'b0011; // ADD: rs1 + imm12
           regsel = 2'b10;  // Memory data to register
           memread = 1'b1;
-          // Note: Only LW is fully supported; byte/halfword requires additional logic
         end
-        
-     
-        7'b0100011 : begin // STORE (sb, sh, sw)
-          alusrc = 1'b1;   // Use immediate for address calculation
-          aluop = 4'b0011; // ADD: rs1 + imm12
+     	// 
+        7'b0100011 : begin // storing 
+          alusrc = 1'b1;   // use immediate for address calculation
+          aluop = 4'b0011; // TODO, ADD: rs1 + imm12
           memwrite = 1'b1;
-          regwrite = 1'b0; // Stores don't write to register file
-          // Note: Only SW is fully supported; byte/halfword requires additional logic
+          regwrite = 1'b0; // stores don't write to register file
+         
         end
         
         // *********************** U-Type: LUI (opcode 0110111) ***************************************************
@@ -134,9 +131,9 @@ module control_unit (
           regsel = 2'b01;  // imm20 to register (upper immediate)
         end 
         
-        // ====================================================================
+
         // U-Type: AUIPC (opcode 0010111)
-        // ====================================================================
+
         7'b0010111 : begin // auipc
           regwrite = 1'b1;
           alusrc_pc = 1'b1;      // Use PC as ALU A input (not rs1)
@@ -146,7 +143,7 @@ module control_unit (
         end
    
 
-        // ****************************************** CSR instructions (opcode 1110011) *****************************
+        // ******************************************CSR instructions (opcode 1110011) *****************************
         7'b1110011 : begin 
           if (funct3 == 3'b001) begin // csrrw
             case(csr)
@@ -197,7 +194,7 @@ module control_unit (
         end
         
         default : begin
-          // Unknown opcode - all outputs remain at default (NOP behavior)
+          // Unknown opcode - aka no op .. .default?
         end
                
       endcase

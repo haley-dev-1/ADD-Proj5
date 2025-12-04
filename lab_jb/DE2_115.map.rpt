@@ -1,5 +1,5 @@
 Analysis & Synthesis report for DE2_115
-Wed Dec  3 18:46:17 2025
+Thu Dec  4 17:55:39 2025
 Quartus Prime Version 18.1.0 Build 625 09/12/2018 SJ Standard Edition
 
 
@@ -60,7 +60,7 @@ refer to the applicable agreement for further details.
 +--------------------------------------------------------------------------------------+
 ; Analysis & Synthesis Summary                                                         ;
 +------------------------------------+-------------------------------------------------+
-; Analysis & Synthesis Status        ; Successful - Wed Dec  3 18:46:17 2025           ;
+; Analysis & Synthesis Status        ; Successful - Thu Dec  4 17:55:39 2025           ;
 ; Quartus Prime Version              ; 18.1.0 Build 625 09/12/2018 SJ Standard Edition ;
 ; Revision Name                      ; DE2_115                                         ;
 ; Top-level Entity Name              ; top                                             ;
@@ -176,7 +176,7 @@ refer to the applicable agreement for further details.
 ;                            ;             ;
 ; Usage by Processor         ; % Time Used ;
 ;     Processor 1            ; 100.0%      ;
-;     Processor 2            ;   0.1%      ;
+;     Processor 2            ;   0.0%      ;
 ;     Processor 3            ;   0.0%      ;
 ;     Processor 4            ;   0.0%      ;
 ;     Processor 5            ;   0.0%      ;
@@ -754,13 +754,13 @@ Note: In order to hide this table in the UI and the text report file, please set
 +-------------+--------+----------+------------------------+
 
 
-+------------------------------------------------------+
-; Port Connectivity Checks: "cpu:mycpu|decoder:decode" ;
-+-------+--------+----------+--------------------------+
-; Port  ; Type   ; Severity ; Details                  ;
-+-------+--------+----------+--------------------------+
-; imm_S ; Output ; Info     ; Explicitly unconnected   ;
-+-------+--------+----------+--------------------------+
++--------------------------------------------------------------------------------------------------------------------------------------+
+; Port Connectivity Checks: "cpu:mycpu|decoder:decode"                                                                                 ;
++-------+--------+----------+----------------------------------------------------------------------------------------------------------+
+; Port  ; Type   ; Severity ; Details                                                                                                  ;
++-------+--------+----------+----------------------------------------------------------------------------------------------------------+
+; imm_S ; Output ; Warning  ; Declared by entity but not connected by instance. Logic that only feeds a dangling port will be removed. ;
++-------+--------+----------+----------------------------------------------------------------------------------------------------------+
 
 
 +---------------------------------------------------+
@@ -816,7 +816,7 @@ Note: In order to hide this table in the UI and the text report file, please set
 Info: *******************************************************************
 Info: Running Quartus Prime Analysis & Synthesis
     Info: Version 18.1.0 Build 625 09/12/2018 SJ Standard Edition
-    Info: Processing started: Wed Dec  3 18:46:06 2025
+    Info: Processing started: Thu Dec  4 17:55:27 2025
 Info: Command: quartus_map --read_settings_files=on --write_settings_files=off DE2_115 -c DE2_115
 Warning (18236): Number of processors has not been specified which may cause overloading on shared machines.  Set the global assignment NUM_PARALLEL_PROCESSORS in your QSF to an appropriate value for best performance.
 Info (20030): Parallel compilation is enabled and will use 8 of the 8 processors detected
@@ -829,29 +829,30 @@ Warning (12125): Using design file cpu.sv, which is not specified as a design fi
     Info (12023): Found entity 1: cpu File: /acct/mcs46/lab_jb/cpu.sv Line: 2
 Info (12128): Elaborating entity "cpu" for hierarchy "cpu:mycpu" File: /acct/mcs46/lab_jb/top.sv Line: 25
 Warning (10036): Verilog HDL or VHDL warning at cpu.sv(25): object "rs2_data_W" assigned a value but never read File: /acct/mcs46/lab_jb/cpu.sv Line: 25
-Warning (10850): Verilog HDL warning at cpu.sv(51): number of words (77) in memory file does not match the number of elements in the address range [0:255] File: /acct/mcs46/lab_jb/cpu.sv Line: 51
-Warning (10270): Verilog HDL Case Statement warning at cpu.sv(131): incomplete case statement has no default case item File: /acct/mcs46/lab_jb/cpu.sv Line: 131
-Warning (10030): Net "imem.data_a" at cpu.sv(48) has no driver or initial value, using a default initial value '0' File: /acct/mcs46/lab_jb/cpu.sv Line: 48
-Warning (10030): Net "imem.waddr_a" at cpu.sv(48) has no driver or initial value, using a default initial value '0' File: /acct/mcs46/lab_jb/cpu.sv Line: 48
-Warning (10030): Net "imem.we_a" at cpu.sv(48) has no driver or initial value, using a default initial value '0' File: /acct/mcs46/lab_jb/cpu.sv Line: 48
+Warning (10850): Verilog HDL warning at cpu.sv(49): number of words (77) in memory file does not match the number of elements in the address range [0:255] File: /acct/mcs46/lab_jb/cpu.sv Line: 49
+Warning (10270): Verilog HDL Case Statement warning at cpu.sv(118): incomplete case statement has no default case item File: /acct/mcs46/lab_jb/cpu.sv Line: 118
+Warning (10030): Net "imem.data_a" at cpu.sv(46) has no driver or initial value, using a default initial value '0' File: /acct/mcs46/lab_jb/cpu.sv Line: 46
+Warning (10030): Net "imem.waddr_a" at cpu.sv(46) has no driver or initial value, using a default initial value '0' File: /acct/mcs46/lab_jb/cpu.sv Line: 46
+Warning (10030): Net "imem.we_a" at cpu.sv(46) has no driver or initial value, using a default initial value '0' File: /acct/mcs46/lab_jb/cpu.sv Line: 46
 Warning (12125): Using design file decoder.sv, which is not specified as a design file for the current project, but contains definitions for 1 design units and 1 entities in project
-    Info (12023): Found entity 1: decoder File: /acct/mcs46/lab_jb/decoder.sv Line: 2
-Info (12128): Elaborating entity "decoder" for hierarchy "cpu:mycpu|decoder:decode" File: /acct/mcs46/lab_jb/cpu.sv Line: 65
-Warning (10230): Verilog HDL assignment warning at decoder.sv(36): truncated value with size 33 to match size of target (32) File: /acct/mcs46/lab_jb/decoder.sv Line: 36
-Warning (10230): Verilog HDL assignment warning at decoder.sv(41): truncated value with size 33 to match size of target (32) File: /acct/mcs46/lab_jb/decoder.sv Line: 41
+    Info (12023): Found entity 1: decoder File: /acct/mcs46/lab_jb/decoder.sv Line: 3
+Info (12128): Elaborating entity "decoder" for hierarchy "cpu:mycpu|decoder:decode" File: /acct/mcs46/lab_jb/cpu.sv Line: 61
+Warning (10230): Verilog HDL assignment warning at decoder.sv(34): truncated value with size 33 to match size of target (32) File: /acct/mcs46/lab_jb/decoder.sv Line: 34
+Warning (10230): Verilog HDL assignment warning at decoder.sv(39): truncated value with size 33 to match size of target (32) File: /acct/mcs46/lab_jb/decoder.sv Line: 39
+Warning (10034): Output port "imm_S" at decoder.sv(12) has no driver File: /acct/mcs46/lab_jb/decoder.sv Line: 12
 Warning (12125): Using design file control_unit.sv, which is not specified as a design file for the current project, but contains definitions for 1 design units and 1 entities in project
     Info (12023): Found entity 1: control_unit File: /acct/mcs46/lab_jb/control_unit.sv Line: 2
-Info (12128): Elaborating entity "control_unit" for hierarchy "cpu:mycpu|control_unit:ctrl" File: /acct/mcs46/lab_jb/cpu.sv Line: 77
+Info (12128): Elaborating entity "control_unit" for hierarchy "cpu:mycpu|control_unit:ctrl" File: /acct/mcs46/lab_jb/cpu.sv Line: 72
 Warning (10270): Verilog HDL Case Statement warning at control_unit.sv(70): incomplete case statement has no default case item File: /acct/mcs46/lab_jb/control_unit.sv Line: 70
 Warning (10270): Verilog HDL Case Statement warning at control_unit.sv(77): incomplete case statement has no default case item File: /acct/mcs46/lab_jb/control_unit.sv Line: 77
 Warning (10270): Verilog HDL Case Statement warning at control_unit.sv(55): incomplete case statement has no default case item File: /acct/mcs46/lab_jb/control_unit.sv Line: 55
-Warning (10270): Verilog HDL Case Statement warning at control_unit.sv(171): incomplete case statement has no default case item File: /acct/mcs46/lab_jb/control_unit.sv Line: 171
+Warning (10270): Verilog HDL Case Statement warning at control_unit.sv(168): incomplete case statement has no default case item File: /acct/mcs46/lab_jb/control_unit.sv Line: 168
 Warning (12125): Using design file regfile.sv, which is not specified as a design file for the current project, but contains definitions for 1 design units and 1 entities in project
     Info (12023): Found entity 1: regfile File: /acct/mcs46/lab_jb/regfile.sv Line: 2
-Info (12128): Elaborating entity "regfile" for hierarchy "cpu:mycpu|regfile:rf" File: /acct/mcs46/lab_jb/cpu.sv Line: 90
+Info (12128): Elaborating entity "regfile" for hierarchy "cpu:mycpu|regfile:rf" File: /acct/mcs46/lab_jb/cpu.sv Line: 84
 Warning (12125): Using design file alu.sv, which is not specified as a design file for the current project, but contains definitions for 1 design units and 1 entities in project
     Info (12023): Found entity 1: alu File: /acct/mcs46/lab_jb/alu.sv Line: 7
-Info (12128): Elaborating entity "alu" for hierarchy "cpu:mycpu|alu:alu_inst" File: /acct/mcs46/lab_jb/cpu.sv Line: 121
+Info (12128): Elaborating entity "alu" for hierarchy "cpu:mycpu|alu:alu_inst" File: /acct/mcs46/lab_jb/cpu.sv Line: 111
 Warning (10036): Verilog HDL or VHDL warning at alu.sv(15): object "mullu" assigned a value but never read File: /acct/mcs46/lab_jb/alu.sv Line: 15
 Info (12128): Elaborating entity "hexdriver" for hierarchy "hexdriver:hex0" File: /acct/mcs46/lab_jb/top.sv Line: 27
 Warning (276020): Inferred RAM node "cpu:mycpu|regfile:rf|memory_rtl_0" from synchronous design logic.  Pass-through logic has been added to match the read-during-write behavior of the original design.
@@ -935,6 +936,7 @@ Info (12133): Instantiated megafunction "cpu:mycpu|alu:alu_inst|lpm_mult:Mult0" 
     Info (12134): Parameter "MAXIMIZE_SPEED" = "5"
 Info (12021): Found 1 design units, including 1 entities, in source file db/mult_7dt.tdf
     Info (12023): Found entity 1: mult_7dt File: /acct/mcs46/lab_jb/db/mult_7dt.tdf Line: 30
+Warning (12241): 1 hierarchies have connectivity warnings - see the Connectivity Checks report folder
 Info (13014): Ignored 456 buffer(s)
     Info (13019): Ignored 456 SOFT buffer(s)
 Info (286030): Timing-Driven Synthesis is running
@@ -954,10 +956,10 @@ Info (21057): Implemented 2142 device resources after synthesis - the final reso
     Info (21061): Implemented 1981 logic cells
     Info (21064): Implemented 64 RAM segments
     Info (21062): Implemented 16 DSP elements
-Info: Quartus Prime Analysis & Synthesis was successful. 0 errors, 28 warnings
-    Info: Peak virtual memory: 1069 megabytes
-    Info: Processing ended: Wed Dec  3 18:46:17 2025
-    Info: Elapsed time: 00:00:11
+Info: Quartus Prime Analysis & Synthesis was successful. 0 errors, 30 warnings
+    Info: Peak virtual memory: 1032 megabytes
+    Info: Processing ended: Thu Dec  4 17:55:39 2025
+    Info: Elapsed time: 00:00:12
     Info: Total CPU time (on all processors): 00:00:19
 
 

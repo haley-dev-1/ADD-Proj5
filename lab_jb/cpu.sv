@@ -1,4 +1,4 @@
-// Haley Lind & Michael Stewart - Simplified CPU (No Data Memory)
+// csce611 Haley Lind & Michael Stewart
 module cpu ( 
   input logic clk, 
   input logic rst, // active low reset 
@@ -42,10 +42,8 @@ module cpu (
   logic [31:0] PC_E_byte;
   logic [31:0] branch_target, jal_target, jalr_target;
 
-  // ====================================================================
-  // INSTRUCTION MEMORY (Read-only)
-  // ====================================================================
-  logic [31:0] imem[0:255];
+
+  logic [31:0] imem[0:255]; // like c++ malloc
   
   initial begin 
     $readmemh("./instmem.dat", imem);
@@ -53,20 +51,17 @@ module cpu (
   
   assign instr_F = imem[PC_F];
 
-  // ====================================================================
-  // DECODER
-  // ====================================================================
+  // decdoer
   decoder decode (
     .instruction(instr_E),
     .opcode(opcode_E), .funct3(funct3_E), .funct7(funct7_E), .csr(csr_E),
     .rs1(rs1_E), .rs2(rs2_E), .rd(rd_E),
-    .imm12(imm12_E), .imm_S(), .imm20(imm20_E),
+    .imm12(imm12_E), .imm20(imm20_E),
     .imm_B(imm_B_E), .imm_J(imm_J_E)
   );
 
-  // ====================================================================
-  // CONTROL UNIT
-  // ====================================================================
+
+  // contrl unit
   control_unit ctrl (
     .opcode(opcode_E), .funct3(funct3_E), .funct7(funct7_E), .csr(csr_E),
     .stall_EX(1'b0), .stall_FETCH(),
@@ -76,9 +71,8 @@ module cpu (
     .is_branch(is_branch), .is_jal(is_jal), .is_jalr(is_jalr)
   );
 
-  // ====================================================================
-  // REGISTER FILE
-  // ====================================================================
+
+  // Register file
   logic rf_we;
   assign rf_we = (rd_W != 5'd0) && regwrite_W;
   
@@ -89,29 +83,25 @@ module cpu (
     .readdata1(rf_rd1), .readdata2(rf_rd2)
   );
 
-  // ====================================================================
-  // ALU DATAPATH
-  // ====================================================================
-  
-  // Immediate sign extension
+  // immediate sign extension
   logic [31:0] imm_I_sext, shamt;
   assign imm_I_sext = {{20{imm12_E[11]}}, imm12_E};
   assign shamt = {27'b0, imm12_E[4:0]};
   
-  // ALU input A: PC or rs1
+  // ALU input A -- PC or rs1
   assign alu_a = alusrc_pc ? (PC_E << 2) : rf_rd1;
   
-  // ALU input B: imm20, immediate, or rs2
+  // ALU input B --  imm20, immediate, or rs2
   always_comb begin
     if (alusrc_imm20) begin
       alu_b = imm20_E;  // AUIPC
     end else if (alusrc) begin
       if (aluop == 4'b1000 || aluop == 4'b1001 || aluop == 4'b1010)
-        alu_b = shamt;  // Shift instructions use 5-bit shift amount
+        alu_b = shamt;  // shift instructions use a 5-bit shift amount
       else
-        alu_b = imm_I_sext;  // I-type immediate (ALU ops, JALR)
+        alu_b = imm_I_sext;  // i type  immediate (alu ops & jalr)
     end else begin
-      alu_b = rf_rd2;  // R-type uses rs2
+      alu_b = rf_rd2;  // r type uses rs2
     end
   end
   
@@ -120,11 +110,8 @@ module cpu (
     .R(alu_result), .zero(alu_zero)
   );
 
-  // ====================================================================
-  // BRANCH & JUMP LOGIC
-  // ====================================================================
-  
-  // Branch condition evaluation
+
+  // branch condition evaluation
   always_comb begin
     branch_taken = 1'b0;
     if (is_branch) begin
@@ -146,10 +133,8 @@ module cpu (
   
   assign take_branch = is_jal || is_jalr || (is_branch && branch_taken);
 
-  // ====================================================================
-  // FETCH STAGE PIPELINE
-  // ====================================================================
-  
+
+  // the fetch stage pipeline!!!!!!
   always_comb begin
     if (take_branch) begin
       if (is_jal)       PC_F_next = jal_target;
@@ -165,10 +150,7 @@ module cpu (
     else      PC_F <= PC_F_next;
   end
 
-  // ====================================================================
-  // EXECUTE STAGE PIPELINE
-  // ====================================================================
-  
+  // exec stage pipeline
   always_ff @(posedge clk) begin
     if (!rst) begin
       instr_E <= 32'h00000013; // NOP
@@ -184,8 +166,7 @@ module cpu (
   end
 
  
-  // WRITEBACK STAGE PIPELINE
-
+  //writeback stage
   
   always_ff @(posedge clk) begin
     if (!rst) begin
@@ -197,7 +178,7 @@ module cpu (
       PC_plus4_W <= 32'd0;
       gpio_we_W <= 1'b0;
       rs1_data_W <= 32'd0;
-      rs2_data_W <= 32'd0;
+      rs2_data_W <= 32'd0; //?
     end else begin
       alu_result_W <= alu_result;
       rd_W <= rd_E;

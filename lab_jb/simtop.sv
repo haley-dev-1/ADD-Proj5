@@ -1,4 +1,4 @@
-// Michael Stewart & Haley Lind 
+// csce611 simtop lab4 Michael Stewart & Haley Lind 
 module simtop;
   logic clk;
   logic [17:0] SW;

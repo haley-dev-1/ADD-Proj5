@@ -1,10 +1,9 @@
-    .text
-    .globl main
+# csce611 Haley Lind Michael Stewart 
+# bin2dec -> sqrt program (binary search implementation)    
 
-# =========================================================
-# main: read switches, compute something (sqrt-ish + scale),
-#       convert to BCD, write to display, then loop.
-# =========================================================
+.text
+.globl main
+
 main:
     csrrw   x8,  0xf00, x0      # x8  = CSR[0xf00] (switch input)
     slli    x8,  x8, 14         # fixed-point scale: value << 14
@@ -26,13 +25,7 @@ main:
 
     jal     x0,  main           # j main (infinite loop)
 
-
-# =========================================================
-# sqrt: some iterative square-root-like routine
-# Input:  a0 = value
-# modified registers: x8,x9,x18,x19,x5,x6,x7,x28
-# Output: a0 = "sqrt" result (in x10)
-# =========================================================
+# square root program below with loop to iteratively go with binary search to convert
 sqrt:
     add     x8,  x0,  x10       # x8  = input value
     addi    x9,  x0,  0         # x9  = 0 (initial guess)
@@ -66,12 +59,12 @@ sqrt_exit:
     ret                         
 
 
-# =========================================================
+# - - - - - - -- - - - -- - - - - - - - - -- - - - - -- - - -- -- - - - - - -
 # bin_to_bcd: convert x8 (binary) → packed BCD in x12
-# Uses a magic multiply-by-reciprocal trick for /10 each time.
 # Input:  x8  = value
-# Output: x12 = packed 8 BCD digits (low nibble = least-significant digit)
-# =========================================================
+# Output: x12 = packed 8 BCD digits
+# - - - - - - - - - - -- - - - - -- - - - - - -- - - - -- - - - - -- - - - -
+
 bin_to_bcd:
     lui     x10, 0x1999a        # x10 = 0x1999a000
     addi    x10, x10, -1638     # x10 = 0x19999999 (magic /10 constant)
