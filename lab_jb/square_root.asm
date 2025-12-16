@@ -1,5 +1,13 @@
-# csce611 Haley Lind Michael Stewart 
+# csce611 Haley Lind
 # bin2dec -> sqrt program (binary search implementation)    
+
+# Notes (project 5)
+With no op on each line, the program will line
+Next: loop for opoprtunities to move an instructio nwith a trailing no-op into a position of a no-op of another instruction
+Doing this once eliminates 2 no-ops, allowing 2 instructions to be executed in the same cycle instead of just 1. 
+You can't move branch/jump instructions or uses a value computed by previous instruction. 
+
+*I'm not sure what makes instructions combinable. How do you know when to combine instructions? Something about elminiating no-ops and dependencies...*
 
 .text
 .globl main
@@ -115,64 +123,144 @@ sqrt_exit:
 
 bin_to_bcd:
     lui     x10, 0x1999a        # x10 = 0x1999a000
+    addi    x0,  x0,  x0
+    
     addi    x10, x10, -1638     # x10 = 0x19999999 (magic /10 constant)
+    addi    x0,  x0,  x0
+
     addi    x11, x0,  10        # x11 = 10
+    addi    x0,  x0,  x0
+
     addi    x12, x0,  0         # x12 = 0 (BCD accumulator)
+    addi    x0,  x0,  x0
 
     # Digit 0 (no shift)
     mul     x5,  x8,  x10       # temp = x8 * magic
+    addi    x0,  x0,  x0
+
     mulhu   x8,  x8,  x10       # x8  = quotient ≈ x8/10
+    addi    x0,  x0,  x0
+
     mulhu   x5,  x5,  x11       # x5  = (temp high) * 10? (digit-ish)
+    addi    x0,  x0,  x0
+
     slli    x5,  x5,  0         # << 0
+    addi    x0,  x0,  x0
+
     or      x12, x12, x5        # place digit 0
+    addi    x0,  x0,  x0
 
     # Digit 1 (shift by 4)
     mul     x5,  x8,  x10
+    addi    x0,  x0,  x0
+
     mulhu   x8,  x8,  x10
+    addi    x0,  x0,  x0
+
     mulhu   x5,  x5,  x11
+    addi    x0,  x0,  x0
+
     slli    x5,  x5,  4         # << 4
+    addi    x0,  x0,  x0
+
     or      x12, x12, x5
+    addi    x0,  x0,  x0
 
     # Digit 2 (shift by 8)
     mul     x5,  x8,  x10
+    addi    x0,  x0,  x0
+
     mulhu   x8,  x8,  x10
+    addi    x0,  x0,  x0
+
     mulhu   x5,  x5,  x11
+    addi    x0,  x0,  x0
+
     slli    x5,  x5,  8         # << 8
+    addi    x0,  x0,  x0
+
     or      x12, x12, x5
+    addi    x0,  x0,  x0
 
     # Digit 3 (shift by 12)
     mul     x5,  x8,  x10
+    addi    x0,  x0,  x0
+
     mulhu   x8,  x8,  x10
+    addi    x0,  x0,  x0
+
     mulhu   x5,  x5,  x11
+    addi    x0,  x0,  x0
+
     slli    x5,  x5,  12        # << 12
+    addi    x0,  x0,  x0
+
     or      x12, x12, x5
+    addi    x0,  x0,  x0
 
     # Digit 4 (shift by 16)
     mul     x5,  x8,  x10
+    addi    x0,  x0,  x0
+
     mulhu   x8,  x8,  x10
+    addi    x0,  x0,  x0
+
     mulhu   x5,  x5,  x11
+    addi    x0,  x0,  x0
+
     slli    x5,  x5,  16        # << 16
+    addi    x0,  x0,  x0
+
     or      x12, x12, x5
+    addi    x0,  x0,  x0
+
 
     # Digit 5 (shift by 20)
     mul     x5,  x8,  x10
+    addi    x0,  x0,  x0
+
     mulhu   x8,  x8,  x10
+    addi    x0,  x0,  x0
+
     mulhu   x5,  x5,  x11
+    addi    x0,  x0,  x0
+
     slli    x5,  x5,  20        # << 20
+    addi    x0,  x0,  x0
+
     or      x12, x12, x5
+    addi    x0,  x0,  x0
 
     # Digit 6 (shift by 24)
     mul     x5,  x8,  x10
+    addi    x0,  x0,  x0
+
     mulhu   x8,  x8,  x10
+    addi    x0,  x0,  x0
+
     mulhu   x5,  x5,  x11
+    addi    x0,  x0,  x0
+
     slli    x5,  x5,  24        # << 24
+    addi    x0,  x0,  x0
+
     or      x12, x12, x5
+    addi    x0,  x0,  x0
 
     # Digit 7 (shift by 28)
     mul     x5,  x8,  x10
+    addi    x0,  x0,  x0
+
     mulhu   x8,  x8,  x10
+    addi    x0,  x0,  x0
+
     mulhu   x5,  x5,  x11
+    addi    x0,  x0,  x0
+
     slli    x5,  x5,  28        # << 28
+    addi    x0,  x0,  x0
+
     or      x12, x12, x5
+    addi    x0,  x0,  x0
     
     ret
