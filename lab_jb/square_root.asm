@@ -12,6 +12,9 @@ You can't move branch/jump instructions or uses a value computed by previous ins
 .text
 .globl main
 
+# even: [63:32] # first in cycle
+# odd:  [31:0]  # second in cycle
+
 main:
     csrrw   x8,  0xf00, x0      # x8  = CSR[0xf00] (switch input)
     addi    x0,  x0,  x0
@@ -23,10 +26,7 @@ main:
     addi    x0,  x0,  x0
 
     jal     x1,  sqrt           # call sqrt(a0) → a0
-    addi    x0,  x0,  x0
-
     lui     x5,  0x18           # x5 = 0x18_000
-    addi    x0,  x0,  x0
 
     addi    x5,  x5, 1696       # x5 = 0x18_6a0 = 100000 (magic constant)
     addi    x0,  x0,  x0
@@ -35,10 +35,7 @@ main:
     addi    x0,  x0,  x0
 
     srli    x9,  x6, 14         # x9 = (a0 * 100000) >> 14
-    addi    x0,  x0,  x0
-
     mulhu   x18, x5,  x10       # high part of a0*100000
-    addi    x0,  x0,  x0
 
     slli    x18, x18, 18        # shift high part
     addi    x0,  x0,  x0
@@ -47,10 +44,7 @@ main:
     addi    x0,  x0,  x0
 
     jal     x1,  bin_to_bcd     # bin_to_bcd(x8) → x12
-    addi    x0,  x0,  x0
-
     csrrw   x0,  0xf02, x12     # write BCD to display CSR 0xf02
-    addi    x0,  x0,  x0
 
     jal     x0,  main           # j main (infinite loop)
     addi    x0,  x0,  x0
@@ -58,10 +52,7 @@ main:
 # square root program below with loop to iteratively go with binary search to convert
 sqrt:
     add     x8,  x0,  x10       # x8  = input value
-    addi    x0,  x0,  x0
-
     addi    x9,  x0,  0         # x9  = 0 (initial guess)
-    addi    x0,  x0,  x0
 
     addi    x18, x0,  1         # x18 = 1
     addi    x0,  x0,  x0
@@ -77,22 +68,19 @@ sqrt_loop:
     addi    x0,  x0,  x0
     
     mul     x5,  x19, x19       # low  part of trial^2
-    addi    x0,  x0,  x0
-    
     mulhu   x6,  x19, x19       # high part of trial^2
-    addi    x0,  x0,  x0
 
+    ############################################
+    # i wonder if i can combine these: 
     slli    x7,  x8,  14        # some scaled version of input
-    addi    x0,  x0,  x0
-
     srli    x28, x8,  18        # another scaled version of input
-    addi    x0,  x0,  x0
 
     bltu    x28, x6,  sqrt_step # if x28 < high(trial^2) → don't accept trial
     addi    x0,  x0,  x0
 
     bltu    x6,  x28, sqrt_accept
     addi    x0,  x0,  x0
+    #############################################
                                 # else if high(trial^2) < x28 → accept trial
     bltu    x7,  x5,  sqrt_step # else if scaled input < low(trial^2) → don't accept
     addi    x0,  x0,  x0
@@ -110,8 +98,6 @@ sqrt_step:
 
 sqrt_exit:
     add     x10, x0,  x9        # a0 = guess
-    addi    x0,  x0,  x0
-
     ret                         
 
 
@@ -123,55 +109,29 @@ sqrt_exit:
 
 bin_to_bcd:
     lui     x10, 0x1999a        # x10 = 0x1999a000
-    addi    x0,  x0,  x0
+    addi    x11, x0,  10        # x11 = 10
     
     addi    x10, x10, -1638     # x10 = 0x19999999 (magic /10 constant)
-    addi    x0,  x0,  x0
-
-    addi    x11, x0,  10        # x11 = 10
-    addi    x0,  x0,  x0
-
     addi    x12, x0,  0         # x12 = 0 (BCD accumulator)
-    addi    x0,  x0,  x0
 
     # Digit 0 (no shift)
     mul     x5,  x8,  x10       # temp = x8 * magic
-    addi    x0,  x0,  x0
-
     mulhu   x8,  x8,  x10       # x8  = quotient ≈ x8/10
-    addi    x0,  x0,  x0
 
     mulhu   x5,  x5,  x11       # x5  = (temp high) * 10? (digit-ish)
     addi    x0,  x0,  x0
 
-    slli    x5,  x5,  0         # << 0
-    addi    x0,  x0,  x0
-
     or      x12, x12, x5        # place digit 0
-    addi    x0,  x0,  x0
+    mul x5, x8, x10             # temp1
 
-    # Digit 1 (shift by 4)
-    mul     x5,  x8,  x10
-    addi    x0,  x0,  x0
-
-    mulhu   x8,  x8,  x10
-    addi    x0,  x0,  x0
-
+    mulhu   x8,  x8,  x10       # Digit 1 (shift by 4)
     mulhu   x5,  x5,  x11
-    addi    x0,  x0,  x0
 
     slli    x5,  x5,  4         # << 4
-    addi    x0,  x0,  x0
-
     or      x12, x12, x5
-    addi    x0,  x0,  x0
-
-    # Digit 2 (shift by 8)
-    mul     x5,  x8,  x10
-    addi    x0,  x0,  x0
-
+    
+    mul     x5,  x8,  x10       # Digit 2 (shift by 8)
     mulhu   x8,  x8,  x10
-    addi    x0,  x0,  x0
 
     mulhu   x5,  x5,  x11
     addi    x0,  x0,  x0
@@ -180,11 +140,7 @@ bin_to_bcd:
     addi    x0,  x0,  x0
 
     or      x12, x12, x5
-    addi    x0,  x0,  x0
-
-    # Digit 3 (shift by 12)
-    mul     x5,  x8,  x10
-    addi    x0,  x0,  x0
+    mul     x5,  x8,  x10       # Digit 3 (shift by 12)
 
     mulhu   x8,  x8,  x10
     addi    x0,  x0,  x0
@@ -195,12 +151,8 @@ bin_to_bcd:
     slli    x5,  x5,  12        # << 12
     addi    x0,  x0,  x0
 
-    or      x12, x12, x5
-    addi    x0,  x0,  x0
-
-    # Digit 4 (shift by 16)
+    or      x12, x12, x5        # Digit 4 (shift by 16)
     mul     x5,  x8,  x10
-    addi    x0,  x0,  x0
 
     mulhu   x8,  x8,  x10
     addi    x0,  x0,  x0
@@ -211,13 +163,8 @@ bin_to_bcd:
     slli    x5,  x5,  16        # << 16
     addi    x0,  x0,  x0
 
-    or      x12, x12, x5
-    addi    x0,  x0,  x0
-
-
-    # Digit 5 (shift by 20)
+    or      x12, x12, x5    # # Digit 5 (shift by 20)
     mul     x5,  x8,  x10
-    addi    x0,  x0,  x0
 
     mulhu   x8,  x8,  x10
     addi    x0,  x0,  x0
@@ -228,12 +175,8 @@ bin_to_bcd:
     slli    x5,  x5,  20        # << 20
     addi    x0,  x0,  x0
 
-    or      x12, x12, x5
-    addi    x0,  x0,  x0
-
-    # Digit 6 (shift by 24)
+    or      x12, x12, x5    # Digit 6 (shift by 24)
     mul     x5,  x8,  x10
-    addi    x0,  x0,  x0
 
     mulhu   x8,  x8,  x10
     addi    x0,  x0,  x0
@@ -244,12 +187,8 @@ bin_to_bcd:
     slli    x5,  x5,  24        # << 24
     addi    x0,  x0,  x0
 
-    or      x12, x12, x5
-    addi    x0,  x0,  x0
-
-    # Digit 7 (shift by 28)
-    mul     x5,  x8,  x10
-    addi    x0,  x0,  x0
+    or      x12, x12, x5        
+    mul     x5,  x8,  x10       # Digit 7 (shift by 28)
 
     mulhu   x8,  x8,  x10
     addi    x0,  x0,  x0
