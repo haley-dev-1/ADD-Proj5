@@ -1,17 +1,75 @@
 ---
 title: RISC-V J/B Lab
-author: "Copyright 2020-2025 Jason Bakos, Philip Conrad, Charles Daniels"
-disable-header-and-footer: false
-header-center: "Due: Friday, Dec. 5, 2025"
 header-right: "CSCE611: Advanced Digital Design"
 ---
 
-# Introduction
+# Lab 5: VLIW Notes from Lecture.
 
-In this lab, you will enhance your existing 3-stage RISC-V processor with
-branching and jump instructions. These will require some changes to parts of
-your pipeline, but will greatly improve the range of programs your CPU will be
-able to accept.
+# Introduction
+CSCE Lab for Honors/Graduate credit.  
+In this lab, we extend our 3-stage CPU capable of R, I, U, J, and B instructions to a VLIW model that can handle 2 instructions at a time.  
+
+1. Group each pair of instructions in our code
+2. Fetch them as 64 bit units
+3. For this, increase imem from 32 to 64
+4. For this, remove all even numbered new lines/line breaks, assuming numbering starts at 0
+5. This places odd in 31 down to 0, and even in 63 to 32.
+
+## VLIW Program Behavior Rules
+Exploit the parallelism with these 2 rules:
+1. branches and jumps can only be in even numbered instructions
+2. all branch/jump targets must be even-numbered instructions
+3. NOTE: any odd number instruction that immediately follows a taken branch *will still be executed*
+4. If you read a reg in an odd-numbered instruction, you can expect the register *not to reflect* any writes to that register in the previous instruction. Any odd numbered instruction that reads a regiser written to by the previous even numbered instruction *will be read as its value previous to the PREVIOUS instruction*. 
+
+## Hardware changes!
+- increase the instruction width from 32 to 64 bit
+- increment PC by 2
+- delete LSB of pc when connecting to instruction memory address
+
+'''asm
+PC_FETCH <= PC_FETCH+'b2
+inst_mem <= PC_FETCH[11:1]]
+'''
+- add two read, one write ports to regfile
+- bypass BOTH write ports to all four read ports
+note: readdata1 to readdata4 SHOULD be able to output writedata1 or writedata2 dependeing on the circumstances
+note on note: designed for simultaneous writes/reads in same cycle due to data dependency between instructions in WRITEBACK/EXECUTE stages
+- note on note on note: if you write then immediately read, this must be supported in register file. 
+- add an additional ALU and control unit
+
+## Square root code
+convert to a VLIW form with the objective of speeding its execution by 1.3x (30% faster)
+
+## Start out
+1. start a no-op instruction to every other line of your program
+NOTE: This places a temporary blank
+2. You fill in as many as you can until you start breaking rules
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Below... OLD NEWS (Lab 3 and 4)
+
 
 # Proposed Approach
 
