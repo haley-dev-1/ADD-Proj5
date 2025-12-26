@@ -47,7 +47,10 @@ main:
     addi    x0,  x0,  x0
 
     jal     x1,  bin_to_bcd     # bin_to_bcd(x8) → x12
+    addi    x0,  x0,  x0
+
     csrrw   x0,  0xf02, x12     # write BCD to display CSR 0xf02
+    addi    x0,  x0,  x0
 
     jal     x0,  main           # j main (infinite loop)
     addi    x0,  x0,  x0
