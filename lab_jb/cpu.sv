@@ -1,4 +1,5 @@
-// csce611 Haley Lind & Michael Stewart
+// csce611 project 5 Haley Lind 
+
 module cpu ( 
   input logic clk, 
   input logic rst, // active low reset 
@@ -6,19 +7,24 @@ module cpu (
   output logic [31:0] gpio_out
 );
 
+  logic [63:0] bundle_F;                  // PC indexes bundles, stepping by 1 per cycle (move by 2 instr. per)
+
   // Fetch stage
-  logic [31:0] PC_F, PC_F_next;
-  logic [31:0] instr_F;
+  logic [31:0] PC_even_F, PC_even_F_next;          
+  logic [31:0] PC_odd_F, PC_odd_F_next;            
+  logic [31:0] instr_odd_F, 
+  logic [31:0] instr_even_F;  
   
   // Execute stage  
-  logic [31:0] instr_E, PC_E;
-  logic [6:0] opcode_E;
-  logic [2:0] funct3_E;
-  logic [6:0] funct7_E;
-  logic [11:0] csr_E;
-  logic [4:0] rs1_E, rs2_E, rd_E;
-  logic [11:0] imm12_E;
-  logic [31:0] imm20_E, imm_B_E, imm_J_E;
+  logic [31:0] instr_odd_E, inst_even_E;  // instructions of odd and even; execute stage.
+  logic [6:0] opcode_odd_E, opcode_even_E;
+  logic [2:0] funct3_odd_E, funct3_even_E;
+  logic [6:0] funct7_odd_E, funct7_even_E;
+  logic [11:0] csr_odd_E, csr_even_E;
+  logic [4:0] rs1_odd_E, rs2_odd_E, rd_odd_E, rs1_even_E, rs2_even_E, rd_even_E;
+  logic [11:0] imm12_even_E, imm12_odd_E;
+  logic [31:0] imm20_even_E, imm_even_B_E, imm_even_J_E;
+  logic [31:0] imm20_odd_E, imm_odd_B_E, imm_odd_J_E;
   
   // Writeback stage
   logic [31:0] alu_result_W, PC_plus4_W, imm20_W;
@@ -51,15 +57,22 @@ module cpu (
   
   assign instr_F = imem[PC_F];
 
-  // decdoer
-  decoder decode (
-    .instruction(instr_E),
+  // decoders -- both even and odd instructions (bundle)
+  decoder decode_even (
+    .instruction(instr_even_E),
     .opcode(opcode_E), .funct3(funct3_E), .funct7(funct7_E), .csr(csr_E),
     .rs1(rs1_E), .rs2(rs2_E), .rd(rd_E),
     .imm12(imm12_E), .imm20(imm20_E),
     .imm_B(imm_B_E), .imm_J(imm_J_E)
   );
 
+  decoder decode_odd (
+    .instruction(inst_odd_E),
+    .opcode(opcode_E), .funct3(funct3_E), .funct7(funct7_E), .csr(csr_E),
+    .rs1(rs1_E), .rs2(rs2_E), .rd(rd_E),
+    .imm12(imm12_E), .imm20(imm20_E),
+    .imm_B(imm_B_E), .imm_J(imm_J_E)
+  );
 
   // contrl unit
   control_unit ctrl (
@@ -153,13 +166,13 @@ module cpu (
   // exec stage pipeline
   always_ff @(posedge clk) begin
     if (!rst) begin
-      instr_E <= 32'h00000013; // NOP
+      inst_even_E <= 32'h00000013; // NOP
       PC_E <= 32'd0;
     end else begin
       if (take_branch) begin
-        instr_E <= 32'h00000013; // Flush pipeline on branch/jump
+        inst_even_E <= 32'h00000013; // Flush pipeline on branch/jump
       end else begin
-        instr_E <= instr_F;
+        inst_even_E <= instr_F;
       end
       PC_E <= PC_F;
     end
