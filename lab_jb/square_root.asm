@@ -25,8 +25,11 @@ main:
     add     x10, x0,  x8        # a0 = input (for sqrt)
     addi    x0,  x0,  x0
 
-    jal     x1,  sqrt           # call sqrt(a0) → a0
-    lui     x5,  0x18           # x5 = 0x18_000
+    jal     x1,  sqrt           # call sqrt
+    addi    x0, x0, x0 
+    
+    lui     x5,  0x18           # x5 = 0x18_000 # This still gets executed after the jump b/c VLIW!!
+    addi    x0,  x0,  x0
 
     addi    x5,  x5, 1696       # x5 = 0x18_6a0 = 100000 (magic constant)
     addi    x0,  x0,  x0
