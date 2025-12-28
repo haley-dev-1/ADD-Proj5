@@ -25,7 +25,18 @@ Exploit the parallelism with these 2 rules:
 ## Hardware changes!
 - increase the instruction width from 32 to 64 bit
 - increment PC by 2
-- delete LSB of pc when connecting to instruction memory address
+### delete LSB of pc when connecting to instruction memory addressChecklist/Progress:   
+[|| ] VLIW concept (64-bit bundle = even + odd)  
+[|  ] even/odd rules (branches/jumps even-only, delay slot)  
+[|  ] 64-bit imem bundles  
+[|  ] PC logic (bundle-indexed, PC + 1 per cycle)  
+[|  ] bundle split (instr_even / instr_odd)  
+[|  ] fetch -> Execute pipeline registers  
+[|  ] dual decoders (even + odd)  
+[   ] dual execute paths (even & odd)  
+[|  ] sqrt program (baseline)  
+[   ] sqrt program (packed VLIW)  
+
 
 '''asm
 PC_FETCH <= PC_FETCH+'b2
