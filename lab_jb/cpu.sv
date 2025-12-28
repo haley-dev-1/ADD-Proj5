@@ -80,7 +80,8 @@ module cpu (
   
   assign instr_F = imem[PC_F];
 
-  // decoders -- both even and odd instructions (bundle)
+  //  ------------- decoders -- both even and odd instructions (bundle) ------------------ // 
+  
   decoder decode_even (
     .instruction(instr_even_E),
     .opcode(opcode_E), .funct3(funct3_E), .funct7(funct7_E), .csr(csr_E),
@@ -91,11 +92,13 @@ module cpu (
 
   decoder decode_odd (
     .instruction(inst_odd_E),
-    .opcode(opcode_E), .funct3(funct3_E), .funct7(funct7_E), .csr(csr_E),
-    .rs1(rs1_E), .rs2(rs2_E), .rd(rd_E),
-    .imm12(imm12_E), .imm20(imm20_E),
-    .imm_B(imm_B_E), .imm_J(imm_J_E)
+    .opcode(opcode_odd), .funct3(funct3_odd), .funct7(funct7_odd), .csr(csr_odd),
+    .rs1(rs1_odd), .rs2(rs2_odd), .rd(rd_odd),
+    .imm12(imm12_odd), .imm20(imm20_odd),
+    .imm_B(imm_B_odd), .imm_J(imm_J_odd)
   );
+  
+  //  ----------------------------------------------------------------------------------- //
 
   // contrl unit
   control_unit ctrl (
@@ -176,7 +179,7 @@ module cpu (
       else if (is_jalr) PC_F_next = jalr_target;
       else              PC_F_next = branch_target;
     end else begin
-      PC_F_next = PC_F + 1; // PC_F is an index, and imem[pc_f] returns a 64-bit bundle
+      PC_F_next = PC_F + 1; // PC_F is an index, and imem at said address returns a 64-bit bundle
     end
   end
   
@@ -195,7 +198,7 @@ module cpu (
     end
   end
 
-  assign PC_F_next = PC_F + 1; // bundle step ?
+  assign PC_F_next = PC_F + 1; // we are going to next index. 
 
   // exec stage pipeline
   always_ff @(posedge clk) begin
