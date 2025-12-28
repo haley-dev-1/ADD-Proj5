@@ -80,8 +80,7 @@ module cpu (
   
   assign instr_F = imem[PC_F];
 
-  //  ------------- decoders -- both even and odd instructions (bundle) ------------------ // 
-  
+  //  ------------- DECODERS -- both even and odd instructions (bundle) ------------------ // 
   decoder decode_even (
     .instruction(instr_even_E),
     .opcode(opcode_E), .funct3(funct3_E), .funct7(funct7_E), .csr(csr_E),
@@ -97,18 +96,26 @@ module cpu (
     .imm12(imm12_odd), .imm20(imm20_odd),
     .imm_B(imm_B_odd), .imm_J(imm_J_odd)
   );
-  
   //  ----------------------------------------------------------------------------------- //
 
-  // contrl unit
-  control_unit ctrl (
-    .opcode(opcode_E), .funct3(funct3_E), .funct7(funct7_E), .csr(csr_E),
+  //  ------------------------ CONTROL UNITS: Even and Odd ------------------------------ //
+  control_unit ctrl_even (
+    .opcode(opcode_even_E), .funct3(funct3_even_E), .funct7(funct7_even_E), .csr(csr_even_E),
     .stall_EX(1'b0), .stall_FETCH(),
-    .aluop(aluop), .alusrc(alusrc), .alusrc_pc(alusrc_pc), .alusrc_imm20(alusrc_imm20),
-    .regsel(regsel), .regwrite(regwrite),
-    .memread(), .memwrite(), .gpio_we(gpio_we),
-    .is_branch(is_branch), .is_jal(is_jal), .is_jalr(is_jalr)
+    .aluop(aluop_even_E), .alusrc(alusrc_even_E), .alusrc_pc(alusrc_pc_even_E), .alusrc_imm20(alusrc_imm20_even_E),
+    .regsel(regsel_even_E), .regwrite(regwrite_even_E),
+    .memread(), .memwrite(), .gpio_we(gpio_we_even_E),
+    .is_branch(is_branch_even_E), .is_jal(is_jal_even_E), .is_jalr(is_jalr_even_E)
   );
+  control_unit ctrl_odd (
+    .opcode(opcode_odd_E), .funct3(funct3_odd_E), .funct7(funct7_odd_E), .csr(csr_odd_E),
+    .stall_EX(1'b0), .stall_FETCH(),
+    .aluop(aluop_odd_E), .alusrc(alusrc_odd_E), .alusrc_pc(alusrc_pc_odd_E), .alusrc_imm20(alusrc_imm20_odd_E),
+    .regsel(regsel_odd_E), .regwrite(regwrite_odd_E),
+    .memread(), .memwrite(), .gpio_we(gpio_we_odd_E),
+    .is_branch(is_branch_odd_E), .is_jal(is_jal_odd_E), .is_jalr(is_jalr_odd_E)
+  );
+  //  ----------------------------------------------------------------------------------- //
 
 
   // Register file
