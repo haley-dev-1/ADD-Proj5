@@ -7,11 +7,16 @@ module cpu (
   output logic [31:0] gpio_out
 );
 
-  logic [63:0] bundle_F;                  // PC indexes bundles, stepping by 1 per cycle (move by 2 instr. per)
+  // Fetch stage -- use 64; split into 2, and even/odd must be executed separately and have their own control paths, and their own register file.
 
-  // Fetch stage
-  logic [31:0] PC_even_F, PC_even_F_next;          
-  logic [31:0] PC_odd_F, PC_odd_F_next;            
+  logic [63:0] bundle_F;                  // PC indexes bundles, stepping by 1 per cycle (move by 2 instr. per)
+                                          // pc only sees 1 pc ... its just an address that points toward next bundle to fetch. "3 PC because we have 3 stages on the instruction we already fetch
+  logic [31:0] PC_F, PC_F_next;           // bundle index
+  logic [63:0] bundle_F;
+  logic [31:0] instr_even_F, instr_odd_F;
+  logic [31:0] instr_even_E, instr_odd_E;
+  logic [31:0] PC_E;
+  logic [31:0] PC_even_F_next,  PC_odd_F_next;            
   logic [31:0] instr_odd_F, 
   logic [31:0] instr_even_F;  
   
@@ -27,19 +32,33 @@ module cpu (
   logic [31:0] imm20_odd_E, imm_odd_B_E, imm_odd_J_E;
   
   // Writeback stage
-  logic [31:0] alu_result_W, PC_plus4_W, imm20_W;
-  logic [31:0] rs1_data_W, rs2_data_W;
-  logic [4:0] rd_W;
-  logic regwrite_W, gpio_we_W;
-  logic [1:0] regsel_W;
+  logic [31:0] alu_odd_result_W, PC_odd_plus4_W, imm20_odd_W, 
+               dalu_even_result_W, PC_even_plus4_W, imm20_even_W;
+  logic [31:0] rs1_odd_data_W, rs2_odd_data_W,      // "if you still need rs
+               rs1_even_data_W, rs2_even_data_W;    //  in pipe. mirror them"
+  logic [4:0] rd_odd_W, rd_even_W;
+  logic       regwrite_odd_W, regwrite_even_W; 
+  logic       gpio_odd_we_W, gpio_even_we_W;
+  logic [1:0] regsel_even_W, regsel_odd_W;  // paths for writeback mux select per lane
 
-  // Control signals (Execute stage)
-  logic [3:0] aluop;
-  logic alusrc, alusrc_pc, alusrc_imm20;
-  logic [1:0] regsel;
-  logic regwrite, gpio_we;
-  logic is_branch, is_jal, is_jalr;
-  logic branch_taken, take_branch;
+  // control signals execute stage: EVEN lane
+  logic [3:0] aluop_even_E;
+  logic       alusrc_even_E, alusrc_pc_even_E, alusrc_imm20_even_E;
+  logic [1:0] regsel_even_E;
+  logic       regwrite_even_E, gpio_we_even_E;
+  logic       is_branch_even_E, is_jal_even_E, is_jalr_even_E;
+
+  // control signals execute stage: ODD lane
+  logic [3:0] aluop_odd_E;
+  logic       alusrc_odd_E, alusrc_pc_odd_E, alusrc_imm20_odd_E;
+  logic [1:0] regsel_odd_E;
+  logic       regwrite_odd_E, gpio_we_odd_E;
+  logic       is_branch_odd_E, is_jal_odd_E, is_jalr_odd_E;   // will get forced 0 or trapped (odd can't branch/jump)
+
+  // branch decision / PC control (from EVEN lane only bcuz of jump/branch in ONLY EVEN!)
+  logic       branch_taken_even_E;
+  logic       take_branch_even_E;
+
 
   // Datapath signals
   logic [31:0] rf_rd1, rf_rd2, rf_wd;
@@ -49,8 +68,12 @@ module cpu (
   logic [31:0] branch_target, jal_target, jalr_target;
 
 
-  logic [31:0] imem[0:255]; // like c++ malloc
+  logic [63:0] imem[0:255]; // now imem is 64 bit. we will fetch 2 instructions from imem at a time, addressed by the PC as a bundle. 
   
+  assign bundle_F = imem[PC_F]; 
+  assign instr_even_F = bundle_F[63:32]; 
+  assign instr_odd_F = bundle_F[31:0];
+
   initial begin 
     $readmemh("./instmem.dat", imem);
   end 
@@ -146,7 +169,6 @@ module cpu (
   
   assign take_branch = is_jal || is_jalr || (is_branch && branch_taken);
 
-
   // the fetch stage pipeline!!!!!!
   always_comb begin
     if (take_branch) begin
@@ -154,14 +176,26 @@ module cpu (
       else if (is_jalr) PC_F_next = jalr_target;
       else              PC_F_next = branch_target;
     end else begin
-      PC_F_next = PC_F + 1;
+      PC_F_next = PC_F + 1; // PC_F is an index, and imem[pc_f] returns a 64-bit bundle
     end
   end
   
+  //pipeline registers get us into execute, and we load PC with next. This is clocked. We need those registers inbetween stages to store! 
   always_ff @(posedge clk) begin
-    if (!rst) PC_F <= 32'd0;
-    else      PC_F <= PC_F_next;
+    if (!rst) begin
+      PC_F <= 32'd0;
+      PC_E <= 32'd0;
+      instr_even_E <= 32'h00000013; // NOP
+      instr_odd_E  <= 32'h00000013; // NOP
+    end else begin
+      PC_F <= PC_F_next;
+      PC_E <= PC_F;                   // on clock edge, latch what we fetched into the execute stage
+      instr_even_E <= instr_even_F;   //
+      instr_odd_E  <= instr_odd_F;    // 
+    end
   end
+
+  assign PC_F_next = PC_F + 1; // bundle step ?
 
   // exec stage pipeline
   always_ff @(posedge clk) begin
