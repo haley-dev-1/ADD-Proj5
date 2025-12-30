@@ -9,16 +9,16 @@ module cpu (
 
   // Fetch stage -- use 64; split into 2, and even/odd must be executed separately and have their own control paths, and their own register file.
 
-  logic [63:0] bundle_F;                  // PC indexes bundles, stepping by 1 per cycle (move by 2 instr. per)
-                                          // pc only sees 1 pc ... its just an address that points toward next bundle to fetch. "3 PC because we have 3 stages on the instruction we already fetch
-  logic [31:0] PC_F, PC_F_next;           // bundle index
-  logic [63:0] bundle_F;
-  logic [31:0] instr_even_F, instr_odd_F;
+  logic [63:0] bundle_F;        // PC indexes bundles, stepping by 1 per cycle (move by 2 instr. per) // pc only sees 1 pc ... its just an address that points toward next bundle to fetch. "3 PC because we have 3 stages on the instruction we already fetch
+  logic [31:0] PC_F;
+  logic [31:0] PC_F_next;
+  logic [31:0] instr_even_F;
+  logic [31:0] instr_odd_F;
+  logic [31:0] PC_even_F_next;
+  logic [31:0] PC_odd_F_next;              
+    
   logic [31:0] instr_even_E, instr_odd_E;
   logic [31:0] PC_E;
-  logic [31:0] PC_even_F_next,  PC_odd_F_next;            
-  logic [31:0] instr_odd_F, 
-  logic [31:0] instr_even_F;  
   
   // Execute stage  
   logic [31:0] instr_odd_E, inst_even_E;  // instructions of odd and even; execute stage.
@@ -83,18 +83,18 @@ module cpu (
   //  ------------- DECODERS -- both even and odd instructions (bundle) ------------------ // 
   decoder decode_even (
     .instruction(instr_even_E),
-    .opcode(opcode_E), .funct3(funct3_E), .funct7(funct7_E), .csr(csr_E),
-    .rs1(rs1_E), .rs2(rs2_E), .rd(rd_E),
-    .imm12(imm12_E), .imm20(imm20_E),
-    .imm_B(imm_B_E), .imm_J(imm_J_E)
+    .opcode(opcode_even_E), .funct3(funct3_even_E), .funct7(funct7_even_E), .csr(csr_even_E),
+    .rs1(rs1_even_E), .rs2(rs2_E), .rd(rd_even_E),
+    .imm12(imm12_even_E), .imm20(imm20_even_E),
+    .imm_B(imm_even_B_E), .imm_J(imm_even_J_E)
   );
 
   decoder decode_odd (
     .instruction(inst_odd_E),
-    .opcode(opcode_odd), .funct3(funct3_odd), .funct7(funct7_odd), .csr(csr_odd),
-    .rs1(rs1_odd), .rs2(rs2_odd), .rd(rd_odd),
-    .imm12(imm12_odd), .imm20(imm20_odd),
-    .imm_B(imm_B_odd), .imm_J(imm_J_odd)
+    .opcode(opcode_odd_E), .funct3(funct3_odd_E), .funct7(funct7_odd_E), .csr(csr_odd_E),
+    .rs1(rs1_odd_E), .rs2(rs2_odd_E), .rd(rd_odd_E),
+    .imm12(imm12_odd_E), .imm20(imm20_odd_E),
+    .imm_B(imm_B_odd_E), .imm_J(imm_J_odd_E)
   );
   //  ----------------------------------------------------------------------------------- //
 
@@ -216,7 +216,7 @@ module cpu (
       if (take_branch) begin
         inst_even_E <= 32'h00000013; // Flush pipeline on branch/jump
       end else begin
-        inst_even_E <= instr_F;
+        inst_even_E <= instr_even_F;
       end
       PC_E <= PC_F;
     end
