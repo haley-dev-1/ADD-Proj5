@@ -158,77 +158,77 @@ module cpu (
   
 // ------ start of ALU logic stuff ---------------------------------------------
 
-// EVEN lane ALU
-logic [31:0] alu_even_a, alu_even_b, alu_even_result;
-logic        alu_even_zero;
+  // EVEN lane ALU
+  logic [31:0] alu_even_a, alu_even_b, alu_even_result;
+  logic        alu_even_zero;
 
-// ODD lane ALU
-logic [31:0] alu_odd_a,  alu_odd_b,  alu_odd_result;
-logic        alu_odd_zero;
+  // ODD lane ALU
+  logic [31:0] alu_odd_a,  alu_odd_b,  alu_odd_result;
+  logic        alu_odd_zero;
 
-// EVEN lane ALU input A
-always_comb begin
-  if (alusrc_pc_even_E)
-    alu_even_a = PC_E << 2;
-  else
-    alu_even_a = rs1_even_data_E; // or rf output mapped to even
-end
-
-// EVEN lane ALU input B
-always_comb begin
-  if (alusrc_imm20_even_E) begin
-    alu_even_b = imm20_even_E;
-  end else if (alusrc_even_E) begin
-    if (aluop_even_E == 4'b1000 ||
-        aluop_even_E == 4'b1001 ||
-        aluop_even_E == 4'b1010)
-      alu_even_b = {27'b0, imm12_even_E[4:0]};
+  // EVEN lane ALU input A
+  always_comb begin
+    if (alusrc_pc_even_E)
+      alu_even_a = PC_E << 2;
     else
-      alu_even_b = {{20{imm12_even_E[11]}}, imm12_even_E};
-  end else begin
-    alu_even_b = rs2_even_data_E;
+      alu_even_a = rs1_even_data_E; // or rf output mapped to even
   end
-end
 
-// ODD lane ALU input A
-always_comb begin
-  if (alusrc_pc_odd_E)
-    alu_odd_a = PC_E << 2;
-  else
-    alu_odd_a = rs1_odd_data_E;
-end
+  // EVEN lane ALU input B
+  always_comb begin
+    if (alusrc_imm20_even_E) begin
+      alu_even_b = imm20_even_E;
+    end else if (alusrc_even_E) begin
+      if (aluop_even_E == 4'b1000 ||
+          aluop_even_E == 4'b1001 ||
+          aluop_even_E == 4'b1010)
+        alu_even_b = {27'b0, imm12_even_E[4:0]};
+      else
+        alu_even_b = {{20{imm12_even_E[11]}}, imm12_even_E};
+    end else begin
+      alu_even_b = rs2_even_data_E;
+    end
+  end
 
-// ODD lane ALU input B
-always_comb begin
-  if (alusrc_imm20_odd_E) begin
-    alu_odd_b = imm20_odd_E;
-  end else if (alusrc_odd_E) begin
-    if (aluop_odd_E == 4'b1000 ||
-        aluop_odd_E == 4'b1001 ||
-        aluop_odd_E == 4'b1010)
-      alu_odd_b = {27'b0, imm12_odd_E[4:0]};
+  // ODD lane ALU input A
+  always_comb begin
+    if (alusrc_pc_odd_E)
+      alu_odd_a = PC_E << 2;
     else
-      alu_odd_b = {{20{imm12_odd_E[11]}}, imm12_odd_E};
-  end else begin
-    alu_odd_b = rs2_odd_data_E;
+      alu_odd_a = rs1_odd_data_E;
   end
-end
+
+  // ODD lane ALU input B
+  always_comb begin
+    if (alusrc_imm20_odd_E) begin
+      alu_odd_b = imm20_odd_E;
+    end else if (alusrc_odd_E) begin
+      if (aluop_odd_E == 4'b1000 ||
+          aluop_odd_E == 4'b1001 ||
+          aluop_odd_E == 4'b1010)
+        alu_odd_b = {27'b0, imm12_odd_E[4:0]};
+      else
+        alu_odd_b = {{20{imm12_odd_E[11]}}, imm12_odd_E};
+    end else begin
+      alu_odd_b = rs2_odd_data_E;
+    end
+  end
   
-alu alu_even (
-  .A(alu_even_a),
-  .B(alu_even_b),
-  .op(aluop_even_E),
-  .R(alu_even_result),
-  .zero(alu_even_zero)
-);
+  alu alu_even (
+    .A(alu_even_a),
+    .B(alu_even_b),
+    .op(aluop_even_E),
+    .R(alu_even_result),
+    .zero(alu_even_zero)
+  );
 
-alu alu_odd (
-  .A(alu_odd_a),
-  .B(alu_odd_b),
-  .op(aluop_odd_E),
-  .R(alu_odd_result),
-  .zero(alu_odd_zero)
-);
+  alu alu_odd (
+    .A(alu_odd_a),
+    .B(alu_odd_b),
+    .op(aluop_odd_E),
+    .R(alu_odd_result),
+    .zero(alu_odd_zero)
+  );
 
 
   // ------ end of ALU logic stuff ---------------------------------------------
@@ -385,7 +385,7 @@ alu alu_odd (
   always_ff @(posedge clk) begin
     if (!rst) begin
       gpio_out <= 32'd0; // active low 
-     end else if (gpio_even_we_W) begin 
+    end else if (gpio_even_we_W) begin 
       gpio_out <= rs1_even_data_W;  // csrrw x0 io2 rs1 outputs rs1
     end else if (gpio_odd_we_W) begin
       gpio_out <= rs1_odd_data_W;
