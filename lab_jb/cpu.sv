@@ -114,20 +114,47 @@ module cpu (
 
 
   // Register file
-  logic rf_we;
-  assign rf_we = (rd_W != 5'd0) && regwrite_W;
   
-  regfile rf (
-    .clk(clk), .we(rf_we),
-    .readaddr1(rs1_E), .readaddr2(rs2_E),
-    .writeaddr(rd_W), .writedata(rf_wd),
-    .readdata1(rf_rd1), .readdata2(rf_rd2)
+  // even lane
+  logic [31:0] rf_even_rd1, rf_even_rd2, rf_even_wd;
+  logic        rf_even_we;
+ 
+  assign rf_even_we = (rd_even_W != 5'd0) && regwrite_even_W;
+  
+  regfile rf_even (
+    .clk(clk), .we(rf_even_we),
+    .readaddr1(rs1_even_E), .readaddr2(rs2_even_E),
+    .writeaddr(rd_even_W), .writedata(rf_even_wd),
+    .readdata1(rf_even_rd1), .readdata2(rf_even_rd2)
+  );
+
+  // odd lane
+  logic [31:0] rf_odd_rd1, rf_odd_rd2, rf_odd_wd;
+  logic        rf_odd_we;
+  
+   assign rf_odd_we = (rd_odd_W != 5'd0) && regwrite_odd_W;
+
+  regfile rf_odd (
+    .clk(clk), .we(rf_odd_we),
+    .readaddr1(rs1_odd_E), .readaddr2(rs2_odd_E),
+    .writeaddr(rd_odd_W), .writedata(rf_odd_wd),
+    .readdata1(rf_odd_rd1), .readdata2(rf_odd_rd2)
   );
 
   // immediate sign extension
-  logic [31:0] imm_I_sext, shamt;
-  assign imm_I_sext = {{20{imm12_E[11]}}, imm12_E};
-  assign shamt = {27'b0, imm12_E[4:0]};
+  // logic [31:0] imm_I_sext, shamt;
+  // assign imm_I_sext = {{20{imm12_E[11]}}, imm12_E};
+  // assign shamt = {27'b0, imm12_E[4:0]};
+
+  // immediate sign extension
+  logic [31:0] imm_I_even_sext, shamt_even;
+  logic [31:0] imm_I_odd_sext,  shamt_odd;
+
+  assign imm_I_even_sext = {{20{imm12_even_E[11]}}, imm12_even_E};
+  assign shamt_even      = {27'b0, imm12_even_E[4:0]};
+
+  assign imm_I_odd_sext  = {{20{imm12_odd_E[11]}}, imm12_odd_E};
+  assign shamt_odd       = {27'b0, imm12_odd_E[4:0]};
   
 // ------ start of ALU logic stuff ---------------------------------------------
 
@@ -208,9 +235,6 @@ alu alu_odd (
 
   // ---- branch decisions -----------------------------------------------------
 
-  logic [31:0] PC_even_E_byte;
-  logic [31:0] branch_target_even;
-
   // branch condition evaluation
   always_comb begin
     branch_taken_even_E = 1'b0;
@@ -231,24 +255,6 @@ alu alu_odd (
     end
   end
 
-  /*
-    always_comb begin
-    branch_taken_even_E = 1'b0;
-
-    if (is_branch_even_E) begin
-      unique case (funct3_even_E)
-        3'b000: branch_taken_even_E = alu_even_zero;        // beq  (rs1 - rs2 == 0)
-        3'b001: branch_taken_even_E = ~alu_even_zero;       // bne
-        3'b100: branch_taken_even_E = alu_even_result[0];   // blt  (depends how you implemented compare)
-        3'b101: branch_taken_even_E = ~alu_even_result[0];  // bge
-        3'b110: branch_taken_even_E = alu_even_result[0];   // bltu
-        3'b111: branch_taken_even_E = ~alu_even_result[0];  // bgeu
-        default: branch_taken_even_E = 1'b0;
-      endcase
-    end
-  end
-  */
-  
   assign instr_F = imem[PC_F];
 
   // targets
@@ -286,8 +292,14 @@ alu alu_odd (
     end else begin
       PC_F <= PC_F_next;
       PC_E <= PC_F;                   // on clock edge, latch what we fetched into the execute stage
-      instr_even_E <= instr_even_F;   //
-      instr_odd_E  <= instr_odd_F;    // 
+
+      if (take_cf_even_E) begin
+        instr_even_E <= 32'h00000013; // NOP
+        instr_odd_E  <= 32'h00000013; // NOP
+      end else begin
+        instr_even_E <= instr_even_F;   //
+        instr_odd_E  <= instr_odd_F;    // 
+      end
     end
   end
 
@@ -328,8 +340,6 @@ alu alu_odd (
       rs1_even_data_W <= 32'd0;
       rs1_odd_data_W  <= 32'd0;
     end else begin
-    
-    end else begin
       alu_even_result_W <= alu_even_result; // used to be just one because single lane
       alu_odd_result_W  <= alu_odd_result;  // but now its 2 b/c even/odd instructions (VLIW)
       rd_even_W <= rd_even_E;             // destination registers
@@ -349,15 +359,24 @@ alu alu_odd (
     end
   end
   
-  // reg write mux
-  
+  // reg write mux split
   always_comb begin
-    case(regsel_W)
-      2'b00 : rf_wd = gpio_in;           // CSR read (io0)
-      2'b01 : rf_wd = imm20_W;           // LUI
-      2'b10 : rf_wd = alu_result_W;      // ALU result
-      2'b11 : rf_wd = PC_plus4_W;        // JAL/JALR return address
-      default : rf_wd = 32'd0;
+    case(regsel_even_W)
+      2'b00 : rf_even_wd = gpio_in;           // CSR read (io0)
+      2'b01 : rf_even_wd = imm20_even_W;      // LUI
+      2'b10 : rf_even_wd = alu_even_result_W; // ALU result
+      2'b11 : rf_even_wd = PC_even_plus4_W;   // JAL/JALR return address
+      default : rf_even_wd = 32'd0;
+    endcase
+  end
+
+  always_comb begin
+    case(regsel_odd_W)
+      2'b00 : rf_odd_wd = gpio_in;           // CSR read (io0)
+      2'b01 : rf_odd_wd = imm20_odd_W;       // LUI
+      2'b10 : rf_odd_wd = alu_odd_result_W;  // ALU result
+      2'b11 : rf_odd_wd = PC_odd_plus4_W;    // JAL/JALR return address
+      default : rf_odd_wd = 32'd0;
     endcase
   end
 
@@ -366,8 +385,10 @@ alu alu_odd (
   always_ff @(posedge clk) begin
     if (!rst) begin
       gpio_out <= 32'd0; // active low 
-    end else if (gpio_we_W) begin 
-      gpio_out <= rs1_data_W;  // csrrw x0 io2 rs1 outputs rs1
+     end else if (gpio_even_we_W) begin 
+      gpio_out <= rs1_even_data_W;  // csrrw x0 io2 rs1 outputs rs1
+    end else if (gpio_odd_we_W) begin
+      gpio_out <= rs1_odd_data_W;
     end
   end
 
