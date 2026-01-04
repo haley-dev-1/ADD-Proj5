@@ -21,7 +21,6 @@ module cpu (
   logic [31:0] PC_E;
   
   // Execute stage  
-  logic [31:0] instr_odd_E, inst_even_E;  // instructions of odd and even; execute stage.
   logic [6:0] opcode_odd_E, opcode_even_E;
   logic [2:0] funct3_odd_E, funct3_even_E;
   logic [6:0] funct7_odd_E, funct7_even_E;
@@ -59,32 +58,28 @@ module cpu (
   logic       branch_taken_even_E;
   logic       take_branch_even_E;
 
-
   // Datapath signals
-  logic [31:0] rf_rd1, rf_rd2, rf_wd;
-  logic [31:0] alu_a, alu_b, alu_result;
-  logic alu_zero;
   logic [31:0] PC_E_byte;
-  logic [31:0] branch_target, jal_target, jalr_target;
+  logic [31:0] branch_target_even;
+  logic [31:0] jal_target_even;
+  logic [31:0] jalr_target_even;
 
+  // instruction memory
+  logic [63:0] imem[0:255];   // now imem is 64 bit. we will fetch 2 instructions from imem at a time, addressed by the PC as a bundle. 
 
-  logic [63:0] imem[0:255]; // now imem is 64 bit. we will fetch 2 instructions from imem at a time, addressed by the PC as a bundle. 
-  
   assign bundle_F = imem[PC_F]; 
   assign instr_even_F = bundle_F[63:32]; 
   assign instr_odd_F = bundle_F[31:0];
 
   initial begin 
-    $readmemh("./instmem.dat", imem);
+    $readmemh("./instmem.dat", imem); // initializes an array. read file into array. repository of intial values.
   end 
-  
-  assign instr_F = imem[PC_F];
 
   //  ------------- DECODERS -- both even and odd instructions (bundle) ------------------ // 
   decoder decode_even (
     .instruction(instr_even_E),
     .opcode(opcode_even_E), .funct3(funct3_even_E), .funct7(funct7_even_E), .csr(csr_even_E),
-    .rs1(rs1_even_E), .rs2(rs2_E), .rd(rd_even_E),
+    .rs1(rs1_even_E), .rs2(rs2_even_E), .rd(rd_even_E),
     .imm12(imm12_even_E), .imm20(imm20_even_E),
     .imm_B(imm_even_B_E), .imm_J(imm_even_J_E)
   );
@@ -134,59 +129,150 @@ module cpu (
   assign imm_I_sext = {{20{imm12_E[11]}}, imm12_E};
   assign shamt = {27'b0, imm12_E[4:0]};
   
-  // ALU input A -- PC or rs1
-  assign alu_a = alusrc_pc ? (PC_E << 2) : rf_rd1;
-  
-  // ALU input B --  imm20, immediate, or rs2
-  always_comb begin
-    if (alusrc_imm20) begin
-      alu_b = imm20_E;  // AUIPC
-    end else if (alusrc) begin
-      if (aluop == 4'b1000 || aluop == 4'b1001 || aluop == 4'b1010)
-        alu_b = shamt;  // shift instructions use a 5-bit shift amount
-      else
-        alu_b = imm_I_sext;  // i type  immediate (alu ops & jalr)
-    end else begin
-      alu_b = rf_rd2;  // r type uses rs2
-    end
-  end
-  
-  alu alu_inst (
-    .A(alu_a), .B(alu_b), .op(aluop),
-    .R(alu_result), .zero(alu_zero)
-  );
+// ------ start of ALU logic stuff ---------------------------------------------
 
+// EVEN lane ALU
+logic [31:0] alu_even_a, alu_even_b, alu_even_result;
+logic        alu_even_zero;
+
+// ODD lane ALU
+logic [31:0] alu_odd_a,  alu_odd_b,  alu_odd_result;
+logic        alu_odd_zero;
+
+// EVEN lane ALU input A
+always_comb begin
+  if (alusrc_pc_even_E)
+    alu_even_a = PC_E << 2;
+  else
+    alu_even_a = rs1_even_data_E; // or rf output mapped to even
+end
+
+// EVEN lane ALU input B
+always_comb begin
+  if (alusrc_imm20_even_E) begin
+    alu_even_b = imm20_even_E;
+  end else if (alusrc_even_E) begin
+    if (aluop_even_E == 4'b1000 ||
+        aluop_even_E == 4'b1001 ||
+        aluop_even_E == 4'b1010)
+      alu_even_b = {27'b0, imm12_even_E[4:0]};
+    else
+      alu_even_b = {{20{imm12_even_E[11]}}, imm12_even_E};
+  end else begin
+    alu_even_b = rs2_even_data_E;
+  end
+end
+
+// ODD lane ALU input A
+always_comb begin
+  if (alusrc_pc_odd_E)
+    alu_odd_a = PC_E << 2;
+  else
+    alu_odd_a = rs1_odd_data_E;
+end
+
+// ODD lane ALU input B
+always_comb begin
+  if (alusrc_imm20_odd_E) begin
+    alu_odd_b = imm20_odd_E;
+  end else if (alusrc_odd_E) begin
+    if (aluop_odd_E == 4'b1000 ||
+        aluop_odd_E == 4'b1001 ||
+        aluop_odd_E == 4'b1010)
+      alu_odd_b = {27'b0, imm12_odd_E[4:0]};
+    else
+      alu_odd_b = {{20{imm12_odd_E[11]}}, imm12_odd_E};
+  end else begin
+    alu_odd_b = rs2_odd_data_E;
+  end
+end
+  
+alu alu_even (
+  .A(alu_even_a),
+  .B(alu_even_b),
+  .op(aluop_even_E),
+  .R(alu_even_result),
+  .zero(alu_even_zero)
+);
+
+alu alu_odd (
+  .A(alu_odd_a),
+  .B(alu_odd_b),
+  .op(aluop_odd_E),
+  .R(alu_odd_result),
+  .zero(alu_odd_zero)
+);
+
+
+  // ------ end of ALU logic stuff ---------------------------------------------
+
+  // ---- branch decisions -----------------------------------------------------
+
+  logic [31:0] PC_even_E_byte;
+  logic [31:0] branch_target_even;
 
   // branch condition evaluation
   always_comb begin
-    branch_taken = 1'b0;
-    if (is_branch) begin
-      case(funct3_E)
-        3'b000 : branch_taken = alu_zero;         // beq
-        3'b001 : branch_taken = ~alu_zero;        // bne
-        3'b100 : branch_taken = alu_result[0];    // blt
-        3'b101 : branch_taken = ~alu_result[0];   // bge
-        3'b110 : branch_taken = alu_result[0];    // bltu
-        3'b111 : branch_taken = ~alu_result[0];   // bgeu
+    branch_taken_even_E = 1'b0;
+
+    if (is_branch_even_E) begin
+      unique case (funct3_even_E)
+
+        3'b000: branch_taken_even_E = alu_even_zero;        // beq
+        3'b001: branch_taken_even_E = ~alu_even_zero;       // bne
+        3'b100: branch_taken_even_E = alu_even_result[0];   // blt
+        3'b101: branch_taken_even_E = ~alu_even_result[0];  // bge
+        3'b110: branch_taken_even_E = alu_even_result[0];   // bltu
+        3'b111: branch_taken_even_E = ~alu_even_result[0];  // bgeu
+        
+        default: branch_taken_even_E = 1'b0;
+
       endcase
     end
   end
-  
-  assign PC_E_byte = PC_E << 2;
-  assign branch_target = (PC_E_byte + imm_B_E) >> 2;
-  assign jal_target = (PC_E_byte + imm_J_E) >> 2;
-  assign jalr_target = (alu_result & 32'hfffffffe) >> 2;
-  
-  assign take_branch = is_jal || is_jalr || (is_branch && branch_taken);
 
-  // the fetch stage pipeline!!!!!!
+  /*
+    always_comb begin
+    branch_taken_even_E = 1'b0;
+
+    if (is_branch_even_E) begin
+      unique case (funct3_even_E)
+        3'b000: branch_taken_even_E = alu_even_zero;        // beq  (rs1 - rs2 == 0)
+        3'b001: branch_taken_even_E = ~alu_even_zero;       // bne
+        3'b100: branch_taken_even_E = alu_even_result[0];   // blt  (depends how you implemented compare)
+        3'b101: branch_taken_even_E = ~alu_even_result[0];  // bge
+        3'b110: branch_taken_even_E = alu_even_result[0];   // bltu
+        3'b111: branch_taken_even_E = ~alu_even_result[0];  // bgeu
+        default: branch_taken_even_E = 1'b0;
+      endcase
+    end
+  end
+  */
+  
+  assign instr_F = imem[PC_F];
+
+  // targets
+  assign PC_even_E_byte     = PC_E << 2; // PC_E is bundle index; convert to byte addr
+  assign branch_target_even = (PC_even_E_byte + imm_even_B_E) >> 2;
+  assign jal_target_even    = (PC_even_E_byte + imm_even_J_E) >> 2;
+
+  // jalr uses EVEN lane ALU result (rs1 + imm), then clear bit0
+  assign jalr_target_even   = (alu_even_result & 32'hfffffffe) >> 2;
+
+  // even lane decides control flow
+  assign take_cf_even_E =
+       is_jal_even_E
+    || is_jalr_even_E
+    || (is_branch_even_E && branch_taken_even_E); // both must be true for branch conditions... its a CONDITIONAL~
+
+  // next pc selection driven by even lane (because even controls jumps/branches)
   always_comb begin
-    if (take_branch) begin
-      if (is_jal)       PC_F_next = jal_target;
-      else if (is_jalr) PC_F_next = jalr_target;
-      else              PC_F_next = branch_target;
+    if (take_cf_even_E) begin
+      if (is_jal_even_E)       PC_F_next = jal_target_even;
+      else if (is_jalr_even_E) PC_F_next = jalr_target_even;
+      else                     PC_F_next = branch_target_even;
     end else begin
-      PC_F_next = PC_F + 1; // PC_F is an index, and imem at said address returns a 64-bit bundle
+      PC_F_next = PC_F + 1; // next bundle
     end
   end
   
@@ -205,15 +291,13 @@ module cpu (
     end
   end
 
-  assign PC_F_next = PC_F + 1; // we are going to next index. 
-
   // exec stage pipeline
   always_ff @(posedge clk) begin
     if (!rst) begin
       inst_even_E <= 32'h00000013; // NOP
       PC_E <= 32'd0;
     end else begin
-      if (take_branch) begin
+      if (take_cf_even_E) begin
         inst_even_E <= 32'h00000013; // Flush pipeline on branch/jump
       end else begin
         inst_even_E <= instr_even_F;
@@ -227,25 +311,41 @@ module cpu (
   
   always_ff @(posedge clk) begin
     if (!rst) begin
-      alu_result_W <= 32'd0;
-      rd_W <= 5'd0;
-      regwrite_W <= 1'b0;
-      regsel_W <= 2'b00;
-      imm20_W <= 32'd0;
-      PC_plus4_W <= 32'd0;
-      gpio_we_W <= 1'b0;
-      rs1_data_W <= 32'd0;
-      rs2_data_W <= 32'd0; //?
+      alu_even_result_W <= 32'd0;
+      alu_odd_result_W  <= 32'd0;
+      rd_even_W <= 5'd0;
+      rd_odd_W  <= 5'd0;
+      regwrite_even_W <= 1'b0;
+      regwrite_odd_W  <= 1'b0;
+      regsel_even_W <= 2'b00;
+      regsel_odd_W  <= 2'b00;
+      imm20_even_W <= 32'd0;
+      imm20_odd_W  <= 32'd0;
+      PC_even_plus4_W <= 32'd0;
+      PC_odd_plus4_W  <= 32'd0;
+      gpio_even_we_W <= 1'b0;
+      gpio_odd_we_W  <= 1'b0;
+      rs1_even_data_W <= 32'd0;
+      rs1_odd_data_W  <= 32'd0;
     end else begin
-      alu_result_W <= alu_result;
-      rd_W <= rd_E;
-      regwrite_W <= regwrite;
-      regsel_W <= regsel;
-      imm20_W <= imm20_E;
-      PC_plus4_W <= (PC_E << 2) + 4;
-      gpio_we_W <= gpio_we;
-      rs1_data_W <= rf_rd1;
-      rs2_data_W <= rf_rd2;
+    
+    end else begin
+      alu_even_result_W <= alu_even_result; // used to be just one because single lane
+      alu_odd_result_W  <= alu_odd_result;  // but now its 2 b/c even/odd instructions (VLIW)
+      rd_even_W <= rd_even_E;             // destination registers
+      rd_odd_W  <= rd_odd_E;              // destination
+      regwrite_even_W <= regwrite_even_E; // control 
+      regwrite_odd_W  <= regwrite_odd_E;  // control
+       regsel_even_W <= regsel_even_E;    // control 
+      regsel_odd_W  <= regsel_odd_E;      // control
+      imm20_even_W <= imm20_even_E;       // immediates 
+      imm20_odd_W  <= imm20_odd_E;        // immedates
+      PC_even_plus4_W <= (PC_E << 2) + 32'd4; // return address (PC+4 in bytes)
+      PC_odd_plus4_W  <= (PC_E << 2) + 32'd4;
+      gpio_even_we_W <= gpio_we_even_E;   // gpio write enables (still allowed as an instruction effect; you can restrict to even if your ISA says so)
+      gpio_odd_we_W  <= gpio_we_odd_E;
+      rs1_even_data_W <= rf_even_rd1;     // rs1 values for gpio-out path
+      rs1_odd_data_W  <= rf_odd_rd1;
     end
   end
   
