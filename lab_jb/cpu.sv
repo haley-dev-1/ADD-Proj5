@@ -113,32 +113,53 @@ module cpu (
   //  ----------------------------------------------------------------------------------- //
 
 
-  // Register file
+  // Register file -- only one register file, though with 5 ports. 
+  // a register written by an odd instruction can be read by a subsequent even instruction, even if in same instruction ,,, i think?
   
-  // even lane
-  logic [31:0] rf_even_rd1, rf_even_rd2, rf_even_wd;
-  logic        rf_even_we;
- 
-  assign rf_even_we = (rd_even_W != 5'd0) && regwrite_even_W;
-  
-  regfile rf_even (
-    .clk(clk), .we(rf_even_we),
-    .readaddr1(rs1_even_E), .readaddr2(rs2_even_E),
-    .writeaddr(rd_even_W), .writedata(rf_even_wd),
-    .readdata1(rf_even_rd1), .readdata2(rf_even_rd2)
-  );
+  logic [31:0] rf_rd1, rf_rd2, rf_wd;
+  logic        rf_we;
+  logic [4:0]  rf_wa;
 
-  // odd lane
-  logic [31:0] rf_odd_rd1, rf_odd_rd2, rf_odd_wd;
-  logic        rf_odd_we;
+  assign rf_we = (rd_even_W != 5'd0) && regwrite_even_W;
   
-   assign rf_odd_we = (rd_odd_W != 5'd0) && regwrite_odd_W;
+  // even wins if both wanna write
+  always_comb 
+  begin
+    rf_we = 1'b0;
+    rf_wa = 5'd0;
+    rf_wd = 32'd0;
 
-  regfile rf_odd (
-    .clk(clk), .we(rf_odd_we),
-    .readaddr1(rs1_odd_E), .readaddr2(rs2_odd_E),
-    .writeaddr(rd_odd_W), .writedata(rf_odd_wd),
-    .readdata1(rf_odd_rd1), .readdata2(rf_odd_rd2)
+    if ((rd_even_W!=5'd0)&& regwrite_even_W) 
+    begin
+      rf_we = 1'b1;
+      rf_wa = rd_even_W;
+      case(regsel_even_W)
+        2'b00: rf_wd = gpio_in;      // csr read (io0)
+        2'b01: rf_wd = imm20_even_W;      //lui
+        2'b10: rf_wd = alu_even_result_W; //alu result
+        2'b11: rf_wd = PC_even_plus4_W;   //JAL/JALR return address
+        default: rf_wd=32'd0;
+      endcase
+    end 
+    else if ((rd_odd_W != 5'd0) && regwrite_odd_W) 
+    begin
+      rf_we = 1'b1;
+      rf_wa = rd_odd_W;
+      case(regsel_odd_W)
+        2'b00: rf_wd =gpio_in;      // csr read (io0)
+        2'b01: rf_wd =imm20_odd_W;     // lui
+        2'b10: rf_wd =alu_odd_result_W;  // alu result
+        2'b11: rf_wd =PC_odd_plus4_W;    // JAL/JALR return address
+        default: rf_wd=32'd0;
+      endcase
+    end
+  end
+
+  regfile reg_file (
+    .clk(clk), .we(rf_we),
+    .readaddr1(rs1_E), .readaddr2(rs2_E),
+    .writeaddr(rd_W), .writedata(rf_wd),
+    .readdata1(rf_rd1), .readdata2(rf_rd2)
   );
 
   // immediate sign extension
@@ -160,11 +181,20 @@ module cpu (
 
   // EVEN lane ALU
   logic [31:0] alu_even_a, alu_even_b, alu_even_result;
-  logic        alu_even_zero;
+  logic alu_even_zero;
 
   // ODD lane ALU
   logic [31:0] alu_odd_a,  alu_odd_b,  alu_odd_result;
-  logic        alu_odd_zero;
+  logic alu_odd_zero;
+
+  // regfile read mapping into lane operands (single RF outputs)
+  logic [31:0] rs1_even_data_E, rs2_even_data_E; // evens
+  logic [31:0] rs1_odd_data_E,  rs2_odd_data_E; // odds
+
+  assign rs1_even_data_E= rf_rd1;
+  assign rs2_even_data_E = rf_rd2;
+  assign rs1_odd_data_E = rf_rd1;
+  assign rs2_odd_data_E = rf_rd2;
 
   // EVEN lane ALU input A
   always_comb begin
@@ -354,8 +384,8 @@ module cpu (
       PC_odd_plus4_W  <= (PC_E << 2) + 32'd4;
       gpio_even_we_W <= gpio_we_even_E;   // gpio write enables (still allowed as an instruction effect; you can restrict to even if your ISA says so)
       gpio_odd_we_W  <= gpio_we_odd_E;
-      rs1_even_data_W <= rf_even_rd1;     // rs1 values for gpio-out path
-      rs1_odd_data_W  <= rf_odd_rd1;
+      rs1_even_data_W <= rf_rd1;     // rs1 values for gpio-out path
+      rs1_odd_data_W  <= rf_rd1;
     end
   end
   
