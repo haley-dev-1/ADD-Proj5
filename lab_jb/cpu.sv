@@ -32,7 +32,7 @@ module cpu (
   
   // Writeback stage
   logic [31:0] alu_odd_result_W, PC_odd_plus4_W, imm20_odd_W, 
-               dalu_even_result_W, PC_even_plus4_W, imm20_even_W;
+               alu_even_result_W, PC_even_plus4_W, imm20_even_W;
   logic [31:0] rs1_odd_data_W, rs2_odd_data_W,      // "if you still need rs
                rs1_even_data_W, rs2_even_data_W;    //  in pipe. mirror them"
   logic [4:0] rd_odd_W, rd_even_W;
@@ -56,7 +56,6 @@ module cpu (
 
   // branch decision / PC control (from EVEN lane only bcuz of jump/branch in ONLY EVEN!)
   logic       branch_taken_even_E;
-  logic       take_branch_even_E;
 
   // Datapath signals
   logic [31:0] PC_E_byte;
@@ -85,11 +84,11 @@ module cpu (
   );
 
   decoder decode_odd (
-    .instruction(inst_odd_E),
+    .instruction(instr_odd_E),
     .opcode(opcode_odd_E), .funct3(funct3_odd_E), .funct7(funct7_odd_E), .csr(csr_odd_E),
     .rs1(rs1_odd_E), .rs2(rs2_odd_E), .rd(rd_odd_E),
     .imm12(imm12_odd_E), .imm20(imm20_odd_E),
-    .imm_B(imm_B_odd_E), .imm_J(imm_J_odd_E)
+    .imm_B(imm_odd_B_E), .imm_J(imm_odd_J_E)
   );
   //  ----------------------------------------------------------------------------------- //
 
@@ -117,10 +116,10 @@ module cpu (
   // a register written by an odd instruction can be read by a subsequent even instruction, even if in same instruction ,,, i think?
   
   logic [31:0] rf_rd1, rf_rd2, rf_wd;
-  logic        rf_we;
+  logic        rf_we; 
   logic [4:0]  rf_wa;
 
-  assign rf_we = (rd_even_W != 5'd0) && regwrite_even_W;
+//  assign rf_we = (rd_even_W != 5'd0) && regwrite_even_W; // this continuous assignment (double driving) caused double driving errors since it competes with the assignment/driving in always_comb.
   
   // even wins if both wanna write
   always_comb 
@@ -288,12 +287,14 @@ module cpu (
   assign instr_F = imem[PC_F];
 
   // targets
-  assign PC_even_E_byte     = PC_E << 2; // PC_E is bundle index; convert to byte addr
-  assign branch_target_even = (PC_even_E_byte + imm_even_B_E) >> 2;
-  assign jal_target_even    = (PC_even_E_byte + imm_even_J_E) >> 2;
+  assign PC_E_byte     = PC_E << 2; // PC_E is bundle index; convert to byte addr
+  assign branch_target_even = (PC_E_byte + imm_even_B_E) >> 2; // pc is not split even in VLIW
+  assign jal_target_even    = (PC_E_byte + imm_even_J_E) >> 2;
 
   // jalr uses EVEN lane ALU result (rs1 + imm), then clear bit0
   assign jalr_target_even   = (alu_even_result & 32'hfffffffe) >> 2;
+
+  logic take_cf_even_E;
 
   // even lane decides control flow
   assign take_cf_even_E =
@@ -333,21 +334,22 @@ module cpu (
     end
   end
 
+  // the duplication (if the code below was uncommented) caused a spam of ERRORS ... 32 times ! 
   // exec stage pipeline
-  always_ff @(posedge clk) begin
+  /*always_ff @(posedge clk) begin
     if (!rst) begin
-      inst_even_E <= 32'h00000013; // NOP
+      instr_even_E <= 32'h00000013; // NOP
       PC_E <= 32'd0;
     end else begin
       if (take_cf_even_E) begin
-        inst_even_E <= 32'h00000013; // Flush pipeline on branch/jump
+        instr_even_E <= 32'h00000013; // Flush pipeline on branch/jump
       end else begin
-        inst_even_E <= instr_even_F;
+        instr_even_E <= instr_even_F;
       end
       PC_E <= PC_F;
     end
   end
-
+  */
  
   //writeback stage
   
@@ -390,7 +392,7 @@ module cpu (
   end
   
   // reg write mux split
-  always_comb begin
+  /*always_comb begin
     case(regsel_even_W)
       2'b00 : rf_even_wd = gpio_in;           // CSR read (io0)
       2'b01 : rf_even_wd = imm20_even_W;      // LUI
@@ -409,7 +411,7 @@ module cpu (
       default : rf_odd_wd = 32'd0;
     endcase
   end
-
+*/
   // gpio out 
   
   always_ff @(posedge clk) begin
