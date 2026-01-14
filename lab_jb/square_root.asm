@@ -85,8 +85,11 @@ sqrt_loop:
     ############################################
     # i wonder if i can combine these: 
     slli    x7,  x8,  14        # some scaled version of input
-    srli    x28, x8,  18        # another scaled version of input
+    addi    x0,  x0,  0
 
+    srli    x28, x8,  18        # another scaled version of input
+    addi    x0,  x0,  0
+    
     bltu    x28, x6,  sqrt_step # if x28 < high(trial^2) → don't accept trial
     addi    x0,  x0,  0
 
