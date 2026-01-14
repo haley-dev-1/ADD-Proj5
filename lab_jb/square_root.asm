@@ -61,7 +61,12 @@ main:
 # square root program below with loop to iteratively go with binary search to convert
 sqrt:
     add     x8,  x0,  x10       # x8  = input value
+    addi    x0,  x0,  0
+    
+    
     addi    x9,  x0,  0         # x9  = 0 (initial guess)
+    addi    x0,  x0,  0
+
 
     addi    x18, x0,  1         # x18 = 1
     addi    x0,  x0,  0
@@ -89,7 +94,7 @@ sqrt_loop:
 
     srli    x28, x8,  18        # another scaled version of input
     addi    x0,  x0,  0
-    
+
     bltu    x28, x6,  sqrt_step # if x28 < high(trial^2) → don't accept trial
     addi    x0,  x0,  0
 
@@ -127,29 +132,51 @@ sqrt_exit:
 
 bin_to_bcd:
     lui     x10, 0x1999a        # x10 = 0x1999a000
-    addi    x11, x0,  10        # x11 = 10
-    
-    addi    x10, x10, -1638     # x10 = 0x19999999 (magic /10 constant)
-    addi    x12, x0,  0         # x12 = 0 (BCD accumulator)
+    addi    x0,  x0,  0
 
+
+    addi    x11, x0,  10        # x11 = 10
+    addi    x0,  x0,  0
+    
+    addi    x10, x10, -1638
+    addi    x0,  x0,  0         # x10 = 0x19999999 (magic /10 constant)
+    
+    addi    x12, x0,  0         # x12 = 0 (BCD accumulator)
+    addi    x0,  x0,  0
+    
     # Digit 0 (no shift)
     mul     x5,  x8,  x10       # temp = x8 * magic
+    addi    x0,  x0,  0
+
     mulhu   x8,  x8,  x10       # x8  = quotient ≈ x8/10
+    addi    x0,  x0,  0
 
     mulhu   x5,  x5,  x11       # x5  = (temp high) * 10? (digit-ish)
     addi    x0,  x0,  0
 
     or      x12, x12, x5        # place digit 0
+    addi    x0,  x0,  0
+    
     mul x5, x8, x10             # temp1
-
+    addi    x0,  x0,  0
+    
     mulhu   x8,  x8,  x10       # Digit 1 (shift by 4)
+    addi    x0,  x0,  0
+
     mulhu   x5,  x5,  x11
+    addi    x0,  x0,  0
 
     slli    x5,  x5,  4         # << 4
+    addi    x0,  x0,  0
+
     or      x12, x12, x5
+    addi    x0,  x0,  0
     
     mul     x5,  x8,  x10       # Digit 2 (shift by 8)
+    addi    x0,  x0,  0
+    
     mulhu   x8,  x8,  x10
+    addi    x0,  x0,  0
 
     mulhu   x5,  x5,  x11
     addi    x0,  x0,  0
@@ -158,7 +185,10 @@ bin_to_bcd:
     addi    x0,  x0,  0
 
     or      x12, x12, x5
+    addi    x0,  x0,  0
+    
     mul     x5,  x8,  x10       # Digit 3 (shift by 12)
+    addi    x0,  x0,  0
 
     mulhu   x8,  x8,  x10
     addi    x0,  x0,  0
@@ -170,7 +200,11 @@ bin_to_bcd:
     addi    x0,  x0,  0
 
     or      x12, x12, x5        # Digit 4 (shift by 16)
+    addi    x0,  x0,  0
+
+
     mul     x5,  x8,  x10
+    addi    x0,  x0,  0
 
     mulhu   x8,  x8,  x10
     addi    x0,  x0,  0
@@ -182,7 +216,11 @@ bin_to_bcd:
     addi    x0,  x0,  0
 
     or      x12, x12, x5    # # Digit 5 (shift by 20)
+    addi    x0,  x0,  0
+
+
     mul     x5,  x8,  x10
+    addi    x0,  x0,  0
 
     mulhu   x8,  x8,  x10
     addi    x0,  x0,  0
@@ -194,7 +232,11 @@ bin_to_bcd:
     addi    x0,  x0,  0
 
     or      x12, x12, x5    # Digit 6 (shift by 24)
+    addi    x0,  x0,  0
+
+
     mul     x5,  x8,  x10
+    addi    x0,  x0,  0
 
     mulhu   x8,  x8,  x10
     addi    x0,  x0,  0
@@ -206,7 +248,12 @@ bin_to_bcd:
     addi    x0,  x0,  0
 
     or      x12, x12, x5        
+    addi    x0,  x0,  0
+
+
     mul     x5,  x8,  x10       # Digit 7 (shift by 28)
+    addi    x0,  x0,  0
+
 
     mulhu   x8,  x8,  x10
     addi    x0,  x0,  0
