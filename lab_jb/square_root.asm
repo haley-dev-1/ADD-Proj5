@@ -104,7 +104,10 @@ sqrt_step:
 
 sqrt_exit:
     add     x10, x0,  x9        # a0 = guess
+    addi    x0,  x0,  0
+
     ret                         
+    addi    x0,  x0,  0
 
 
 # - - - - - - -- - - - -- - - - - - - - - -- - - - - -- - - -- -- - - - - - -
