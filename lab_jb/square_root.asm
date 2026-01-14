@@ -42,7 +42,7 @@ main:
 
     mulhu   x18, x5,  x10       # high part of a0*100000
     addi    x0,  x0,  0
-    
+
     slli    x18, x18, 18        # shift high part
     addi    x0,  x0,  0
 
@@ -77,7 +77,10 @@ sqrt_loop:
     addi    x0,  x0,  0
     
     mul     x5,  x19, x19       # low  part of trial^2
+    addi    x0,  x0,  0
+
     mulhu   x6,  x19, x19       # high part of trial^2
+    addi    x0,  x0,  0
 
     ############################################
     # i wonder if i can combine these: 
