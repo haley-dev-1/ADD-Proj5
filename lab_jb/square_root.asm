@@ -38,8 +38,11 @@ main:
     addi    x0,  x0,  0
 
     srli    x9,  x6, 14         # x9 = (a0 * 100000) >> 14
-    mulhu   x18, x5,  x10       # high part of a0*100000
+    addi    x0,  x0,  0
 
+    mulhu   x18, x5,  x10       # high part of a0*100000
+    addi    x0,  x0,  0
+    
     slli    x18, x18, 18        # shift high part
     addi    x0,  x0,  0
 
