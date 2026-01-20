@@ -155,11 +155,12 @@ module cpu (
   end
 
   regfile reg_file (
-    .clk(clk), .we(rf_we),
-    .readaddr1(rs1_E), .readaddr2(rs2_E),
-    .writeaddr(rd_W), .writedata(rf_wd),
-    .readdata1(rf_rd1), .readdata2(rf_rd2)
-  );
+  .clk(clk), .we(rf_we),
+  .readaddr1(rs1_even_E), .readaddr2(rs2_even_E), //same
+  .writeaddr(rf_wa), .writedata(rf_wd),
+  .readdata1(rf_rd1), .readdata2(rf_rd2)
+);
+
 
   // immediate sign extension
   // logic [31:0] imm_I_sext, shamt;
