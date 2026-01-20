@@ -156,9 +156,9 @@ module cpu (
 
   regfile reg_file (
   .clk(clk), .we(rf_we),
-  .readaddr1(rs1_even_E), .readaddr2(rs2_even_E), //same
+  .readaddr1(rs1_even_E), .readaddr2(rs2_even_E), // same address
   .writeaddr(rf_wa), .writedata(rf_wd),
-  .readdata1(rf_rd1), .readdata2(rf_rd2)
+  .readdata1(rf_rd1), .readdata2(rf_rd2) // this is what differentiates ... regfile doesn't know about lanes, only addresses. This is what "splits"
 );
 
 
